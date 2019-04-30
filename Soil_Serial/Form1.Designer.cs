@@ -106,6 +106,7 @@
             this.StempCalibra.TabIndex = 3;
             this.StempCalibra.Text = "标定";
             this.StempCalibra.UseVisualStyleBackColor = true;
+            this.StempCalibra.Click += new System.EventHandler(this.StempCalibra_Click);
             // 
             // label2
             // 
@@ -341,6 +342,7 @@
             this.StempClear.TabIndex = 31;
             this.StempClear.Text = "清零";
             this.StempClear.UseVisualStyleBackColor = true;
+            this.StempClear.Click += new System.EventHandler(this.StempClear_Click);
             // 
             // SHumidClear
             // 

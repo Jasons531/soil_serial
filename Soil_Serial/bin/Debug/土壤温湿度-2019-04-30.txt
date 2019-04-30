@@ -1,50 +1,49 @@
----send : FF FF 01 05 03 20 00 05 D1 
-【18:26:23:146】App Build Time : 15:41:12  Date : Apr 23 2019
+App Build Time : 15:41:12  Date : Apr 23 2019
 App User Software Versions: 2
 App User Hardware Versions: YC.SH.S019001.e1
 App Device id: 100B09303DAC0001
 App User Device id: 0B300001
-【18:26:24:167】App User Battery: 93％
+【18:52:37:582】App User Battery: 94％
 App User Rechargeing: 4.9V
----ZetaRecviceBuf: 00 00 ff 00 08 10 4f 00 6b 16 
-【18:26:26:231】App User Zeta Id: 4F006B16
+---ZetaRecviceBuf: 00 ff 00 08 10 4f 00 6b 16 
+【18:52:39:621】App User Zeta Id: 4F006B16
 App:..\USER\user-app.c,line : 780,User.SleepTime = 5 SceneSelection = 2
 
 App Device id: 100B09303DAC0001
 App User Device id: 0B300001
 App:..\HAL\sensor\src\sensor.c,line : 447,Start get Rs485 Sensor data, It need some time, waiting......
 
-【18:26:28:714】---send : FE 03 04 00 00 00 00 F5 3C 
-【18:26:29:025】..\HAL\sensor\src\rs485.c,----get data----
+【18:52:42:130】---send : FE 03 04 00 00 00 00 F5 3C 
+..\HAL\sensor\src\rs485.c,----get data----
 ..\HAL\sensor\src\rs485.c,214:RS485 Revdata: 
 ---send : 11 03 00 00 00 04 46 99 
+【18:52:43:165】..\HAL\sensor\src\rs485.c,----get data----
+Warning:..\HAL\sensor\src\sensor.c,line : 662,device had not find g_rs485index:01
+---send : 18 03 00 00 00 04 46 00 
 ..\HAL\sensor\src\rs485.c,----get data----
 Warning:..\HAL\sensor\src\sensor.c,line : 662,device had not find g_rs485index:01
-【18:26:30:169】---send : 18 03 00 00 00 04 46 00 
+【18:52:44:314】---send : 19 03 00 00 00 04 47 D1 
 ..\HAL\sensor\src\rs485.c,----get data----
 Warning:..\HAL\sensor\src\sensor.c,line : 662,device had not find g_rs485index:01
----send : 19 03 00 00 00 04 47 D1 
-【18:26:31:222】..\HAL\sensor\src\rs485.c,----get data----
-Warning:..\HAL\sensor\src\sensor.c,line : 662,device had not find g_rs485index:01
----send : 20 03 00 00 00 04 42 B8 
+【18:52:45:055】---send : 20 03 00 00 00 04 42 B8 
 ..\HAL\sensor\src\rs485.c,----get data----
 Warning:..\HAL\sensor\src\sensor.c,line : 662,device had not find g_rs485index:01
 Warning:..\HAL\sensor\src\sensor.c,line : 467,pin 1:not find device
 
-【18:26:34:475】---send : FE 03 04 00 00 00 00 F5 3C 
-..\HAL\sensor\src\rs485.c,----get data----
+【18:52:47:885】---send : FE 03 04 00 00 00 00 F5 3C 
+【18:52:48:206】..\HAL\sensor\src\rs485.c,----get data----
 ..\HAL\sensor\src\rs485.c,214:RS485 Revdata: 
-【18:26:35:205】---send : 11 03 00 00 00 04 46 99 
+---send : 11 03 00 00 00 04 46 99 
 ..\HAL\sensor\src\rs485.c,----get data----
 Warning:..\HAL\sensor\src\sensor.c,line : 662,device had not find g_rs485index:02
----send : 18 03 00 00 00 04 46 00 
-【18:26:36:248】..\HAL\sensor\src\rs485.c,----get data----
-Warning:..\HAL\sensor\src\sensor.c,line : 662,device had not find g_rs485index:02
----send : 19 03 00 00 00 04 47 D1 
+【18:52:49:355】---send : 18 03 00 00 00 04 46 00 
 ..\HAL\sensor\src\rs485.c,----get data----
 Warning:..\HAL\sensor\src\sensor.c,line : 662,device had not find g_rs485index:02
-【18:26:37:385】---send : 20 03 00 00 00 04 42 B8 
+【18:52:50:072】---send : 19 03 00 00 00 04 47 D1 
 ..\HAL\sensor\src\rs485.c,----get data----
+Warning:..\HAL\sensor\src\sensor.c,line : 662,device had not find g_rs485index:02
+---send : 20 03 00 00 00 04 42 B8 
+【18:52:51:107】..\HAL\sensor\src\rs485.c,----get data----
 Warning:..\HAL\sensor\src\sensor.c,line : 662,device had not find g_rs485index:02
 Warning:..\HAL\sensor\src\sensor.c,line : 467,pin 2:not find device
 
@@ -53,7 +52,18 @@ ff 00 04 12
 ---ZetaRecviceBuf: ff 00 06 12 ff ff 
 ff 00 04 13 
 ---ZetaRecviceBuf: ff 00 04 43 
-【18:26:38:941】---Writing registered---
+【18:52:52:359】---Writing registered---
 ff 00 04 13 
-【18:26:45:055】---ZetaRecviceBuf: ff 00 04 43 
-【18:26:46:052】---Writing registered---
+---ZetaRecviceBuf: ff 00 04 43 
+【18:52:59:471】---Writing registered---
+ff 00 04 13 
+---ZetaRecviceBuf: ff 00 04 43 
+【18:53:06:577】---Writing registered---
+ff 00 04 13 
+---ZetaRecviceBuf: ff 00 05 13 68 
+ff 00 05 22 00 
+---ZetaRecviceBuf: ff 00 04 20 
+【18:53:13:782】---send : FF FF 01 05 03 20 00 01 D5 
+【18:53:14:108】..\HAL\sensor\src\rs485.c,----get data----
+【18:53:28:108】---send : FF FF 01 05 03 20 00 05 D1 
+..\HAL\sensor\src\rs485.c,----get data----

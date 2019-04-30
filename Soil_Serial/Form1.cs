@@ -16,20 +16,27 @@ namespace Soil_Serial
     public partial class Form1 : Form
     {
         public SerialPort SerialDevice = new SerialPort();
+        private TempHumidity TempHumiditys = new TempHumidity();
+        private SoilEC SoilEC = new SoilEC();
         private bool FirstSysTime = true;
         private bool SysStartTime = true;
         private DateTime dt1;
         private DateTime dt2;
 
+        internal TempHumidity TempHumiditys1 { get => TempHumiditys; set => TempHumiditys = value; }
+
         public Form1()
         {
-            InitializeComponent();            
+            InitializeComponent();
+            InitSerialConfig();
+            TempHumiditys.InitWidget(SerialDevice, textSoilTemp, SoilTempcheckBox, StempCalibra, StempClear,
+                                    textSoilHumid, SoilHumidcheckBox, SHumidCalibra, SHumidClear, SoilCheck, richTextBox1);
             richTextBox1.Text = "鼠标左键双击，清除显示";
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            InitSerialConfig();
+            
         }
 
         private void InitSerialConfig()
@@ -118,14 +125,13 @@ namespace Soil_Serial
         }
 
         private void SerialDevice_DataReceived(object sender, SerialDataReceivedEventArgs e)
-        {
+        {       
             if (SerialDevice.IsOpen)
             {
                 this.Invoke((EventHandler)(delegate
                 {
                     Byte[] ReceiveData = new Byte[SerialDevice.BytesToRead]; ///接收到ARM数据格式为char - 16进制模式
                     SerialDevice.Read(ReceiveData, 0, ReceiveData.Length);
-
                     //16进制输出
                     //richTextBox1.AppendText(ByteToString(ReceiveData));      
 
@@ -160,13 +166,12 @@ namespace Soil_Serial
                         richTextBox1.AppendText(DateTime.Now.ToString("【HH:mm:ss:fff】"));
                         FileShare(DateTime.Now.ToString("【HH:mm:ss:fff】"));
                     }
+
                     richTextBox1.AppendText(System.Text.Encoding.Default.GetString(ReceiveData));
-                    FileShare(System.Text.Encoding.Default.GetString(ReceiveData));
+                    FileShare(System.Text.Encoding.Default.GetString(ReceiveData));                       
                 }));
             }
         }
-
-        
 
         /// <summary>
         /// byte转换hex字符串输出
@@ -254,6 +259,16 @@ namespace Soil_Serial
         private void CollectTime_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             CollectTime.Clear();
+        }
+
+        private void StempCalibra_Click(object sender, EventArgs e)
+        {
+            TempHumiditys.StempCalibra();
+        }
+
+        private void StempClear_Click(object sender, EventArgs e)
+        {
+            TempHumiditys.StempClear();
         }
     }
 }
