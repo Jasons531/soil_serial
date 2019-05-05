@@ -8,6 +8,7 @@ using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -17,11 +18,13 @@ namespace Soil_Serial
     {
         public SerialPort SerialDevice = new SerialPort();
         private TempHumidity TempHumiditys = new TempHumidity();
+        private Rs485 Rs485s = new Rs485();
         private SoilEC SoilEC = new SoilEC();
         private bool FirstSysTime = true;
         private bool SysStartTime = true;
         private DateTime dt1;
         private DateTime dt2;
+        private bool SoilECMode = false;
 
         internal TempHumidity TempHumiditys1 { get => TempHumiditys; set => TempHumiditys = value; }
 
@@ -36,9 +39,12 @@ namespace Soil_Serial
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            
+
         }
 
+        /// <summary>
+        /// 初始化串口
+        /// </summary>
         private void InitSerialConfig()
         {
             string[] PortNames = SerialPort.GetPortNames();    //获取本机串口名称，存入PortNames数组中 
@@ -59,6 +65,63 @@ namespace Soil_Serial
             SerialDevice.DataReceived += new SerialDataReceivedEventHandler(SerialDevice_DataReceived); //订阅委托     
         }
 
+        ///// <summary>
+        ///// RS485_CRC校验
+        ///// </summary>
+        ///// <param name="data"></param>
+        ///// <param name="len"></param>
+        //private void Rs485Crc(byte[] data, byte len)
+        //{
+        //    ushort result = 0xffff;
+        //    byte i, j;
+
+        //    for (i = 0; i < len; i++)
+        //    {
+        //        result ^= data[i];
+        //        for (j = 0; j < 8; j++)
+        //        {
+        //            result = (result & 1) != 0 ? (ushort)((result >> 1) ^ 0xA001) : (ushort)(result >> 1);
+        //        }
+        //    }
+
+        //    data[len] = (byte)(result & 0x00ff);
+        //    data[++len] = (byte)((result & 0xff00) >> 8);
+        //}
+
+        /// <summary>
+        /// 获取土壤温湿度传感器数据命令
+        /// </summary>
+        private void GetSoilTempHumidity()
+        {
+            Byte[] SendCmds = new Byte[8] { 0xf9, 0x03, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00 };
+            Rs485s.GetCrc(SendCmds, 6);
+
+            SerialDevice.Write(SendCmds, 0, 8);
+            //byte[] bytes = System.Text.Encoding.Default.GetBytes(str);
+            //serialPort1.Write(bytes, 0, bytes.Length);
+            richTextBox1.AppendText(ByteToString(SendCmds)); 
+        }
+
+        /// <summary>
+        /// 获取土壤EC传感器数据命令
+        /// </summary>
+         private void GetSoilTempEC()
+        {
+            Byte[] SendCmds = new Byte[8] { 0xf8, 0x03, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00 };
+
+            Rs485s.GetCrc(SendCmds, 6);
+
+            SerialDevice.Write(SendCmds, 0, 8);
+            //byte[] bytes = System.Text.Encoding.Default.GetBytes(str);
+            //serialPort1.Write(bytes, 0, bytes.Length);
+            richTextBox1.AppendText(ByteToString(SendCmds));
+        }
+
+        /// <summary>
+        /// 打开串口控件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OpenSerial_Click(object sender, EventArgs e)
         {
             if (OpenSerial.Text == "打开串口")
@@ -72,7 +135,7 @@ namespace Soil_Serial
                             SerialDevice.Close();
                         }
                         SerialDevice.PortName = SerialId.SelectedItem.ToString();//设置串口号,获取外部选择串口;
-                        SerialDevice.BaudRate = 115200;
+                        SerialDevice.BaudRate = 9600;
                         //一个停止位
                         SerialDevice.StopBits = System.IO.Ports.StopBits.One;
                         SerialDevice.DataBits = 8;
@@ -84,6 +147,18 @@ namespace Soil_Serial
                         SerialDevice.ReadTimeout = 1;
                         SerialDevice.WriteTimeout = 10;
                         SerialDevice.Open();
+
+                        if (SetModebox.Text == "土壤温湿度")
+                        {
+                            //获取土壤温湿度传感器数据
+                            GetSoilTempHumidity();
+                        }
+                        else if (SetModebox.Text == "土壤电导率")
+                        {
+                            //获取土壤EC传感器数据
+                            GetSoilTempEC();
+                        }
+
                     }
                     catch (System.Exception ex)
                     {
@@ -91,7 +166,7 @@ namespace Soil_Serial
                         SerialId.Items.Clear();
                         OpenSerial.Text = "打开串口";
                         return;
-                    }                   
+                    }
                 }
                 OpenSerial.Text = "关闭串口";
             }
@@ -102,6 +177,10 @@ namespace Soil_Serial
             }
         }
 
+         /// <summary>
+        /// 文件保存
+        /// </summary>
+        /// <param name="text"></param>
         public void FileShare(string text)
         {          
             if (!File.Exists(".\\" + SetModebox.Text + "-" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt"))
@@ -124,16 +203,36 @@ namespace Soil_Serial
             }
         }
 
+        /// <summary>
+        /// 串口接收委托事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SerialDevice_DataReceived(object sender, SerialDataReceivedEventArgs e)
-        {       
+        {
+            int SoilTemp = 0;
+            int SoilHumidity = 0;
+            int SoilEC = 0;
+
             if (SerialDevice.IsOpen)
             {
                 this.Invoke((EventHandler)(delegate
                 {
                     Byte[] ReceiveData = new Byte[SerialDevice.BytesToRead]; ///接收到ARM数据格式为char - 16进制模式
                     SerialDevice.Read(ReceiveData, 0, ReceiveData.Length);
-                    //16进制输出
-                    //richTextBox1.AppendText(ByteToString(ReceiveData));      
+
+                    SoilTemp = (ReceiveData[3] & 0xff) << 8 | ReceiveData[4] & 0xff;
+
+                    if (ReceiveData[0] == 0xf8)
+                    {
+                        SoilECMode = true;
+                        SoilEC = (ReceiveData[5] & 0xff) << 8 | ReceiveData[6] & 0xff;
+                    }
+                    else if (ReceiveData[0] == 0xf9)
+                    {
+                        SoilECMode = false;
+                        SoilHumidity = (ReceiveData[5] & 0xff) << 8 | ReceiveData[6] & 0xff;
+                    }
 
                     if (FirstSysTime)
                     {
@@ -167,7 +266,20 @@ namespace Soil_Serial
                         FileShare(DateTime.Now.ToString("【HH:mm:ss:fff】"));
                     }
 
-                    richTextBox1.AppendText(System.Text.Encoding.Default.GetString(ReceiveData));
+                    ///接收字符
+                    //richTextBox1.AppendText(System.Text.Encoding.Default.GetString(ReceiveData));
+
+                    //16进制输出
+                    //richTextBox1.AppendText(ByteToString(ReceiveData));
+                    if (SoilECMode)
+                    {
+                        richTextBox1.AppendText("土壤电导率: " + "温度: " + (float)SoilTemp / 10 + "℃" + "   " + "EC: " + (float)SoilEC / 1000 + "ds/cm");
+                    }
+                    else
+                    {
+                        richTextBox1.AppendText("土壤温湿度: " + "温度: " + (float)SoilTemp / 10 + "℃" + "   " + "湿度: " + (float)SoilHumidity / 10 + "％");
+                    }
+
                     FileShare(System.Text.Encoding.Default.GetString(ReceiveData));                       
                 }));
             }
@@ -206,6 +318,11 @@ namespace Soil_Serial
             return ByteOut;
         }
 
+        /// <summary>
+        /// 接收文档滚动条
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void RichTextBox1_TextChanged(object sender, EventArgs e)
         {
             /********************** 自动下拉到最后 **********************/
@@ -217,31 +334,61 @@ namespace Soil_Serial
             richTextBox1.ScrollToCaret();
         }
  
+        /// <summary>
+        /// 鼠标双击清除文档显示
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void RichTextBox1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             richTextBox1.Clear();
         }
 
+        /// <summary>
+        /// 鼠标右击剪切
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void 剪切ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             richTextBox1.Cut();
         }
 
+        /// <summary>
+        /// 鼠标右击复制
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void 复制ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             richTextBox1.Copy();
         }
 
+        /// <summary>
+        /// 鼠标右击粘贴
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void 粘贴ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             richTextBox1.Paste();
         }
 
+        /// <summary>
+        /// 鼠标右击全选
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void 全选ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             richTextBox1.SelectAll();
         }
 
+        /// <summary>
+        /// 刷新串口ID
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SerialId_DropDown(object sender, EventArgs e)
         {
             string[] PortNames = SerialPort.GetPortNames();    //获取本机串口名称，存入PortNames数组中 
@@ -256,19 +403,35 @@ namespace Soil_Serial
             }
         }
 
+        /// <summary>
+        /// 鼠标双击清除采集时间
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CollectTime_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             CollectTime.Clear();
         }
 
+        /// <summary>
+        /// 土壤温度标定控件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void StempCalibra_Click(object sender, EventArgs e)
         {
             TempHumiditys.StempCalibra();
         }
 
+        /// <summary>
+        /// 土壤温度清零控件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void StempClear_Click(object sender, EventArgs e)
         {
             TempHumiditys.StempClear();
         }
+
     }
 }

@@ -54,6 +54,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Rs485.cs" />
     <Compile Include="SoilEC.cs" />
     <Compile Include="TempHumidity.cs" />
     <EmbeddedResource Include="Form1.resx">
