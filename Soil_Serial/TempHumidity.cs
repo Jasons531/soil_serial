@@ -18,34 +18,34 @@ namespace Soil_Serial
         /// <summary>
         /// 温度
         /// </summary>
+        private LinkLabel _SoilTempLabel;
         private TextBox   _textSoilTemp;
-        private CheckBox  _SoilTempcheckBox;
         private Button    _StempCalibra;
         private Button    _StempClear;
         /// <summary>
         /// 湿度
         /// </summary>
+        private LinkLabel _HumdataLabel;
         private TextBox   _textSoilHumid;
-        private CheckBox  _SoilHumidcheckBox;
         private Button    _SHumidCalibra;
         private Button    _SHumidClear;
         private Button    _SoilCheck;
 
         private RichTextBox _RichTextBox1;
 
-        public void InitWidget(SerialPort SerialDevice, TextBox textSoilTemp,  CheckBox SoilTempcheckBox,  Button StempCalibra,  Button StempClear,
-                                TextBox textSoilHumid, CheckBox SoilHumidcheckBox, Button SHumidCalibra, Button SHumidClear, Button SoilCheck, RichTextBox RichTextBox1)
+        public void InitWidget(SerialPort SerialDevice, LinkLabel SoilTempLabel, TextBox textSoilTemp,  Button StempCalibra,  Button StempClear, LinkLabel HumdataLabel,
+                                TextBox textSoilHumid, Button SHumidCalibra, Button SHumidClear, Button SoilCheck, RichTextBox RichTextBox1)
         {
             _SerialDevice = SerialDevice;
             ///温度控件
+            _SoilTempLabel = SoilTempLabel;
             _textSoilTemp = textSoilTemp;
-            _SoilTempcheckBox = SoilTempcheckBox;
             _StempCalibra = StempCalibra;
             _StempClear = StempClear;
 
             ///湿度控件
+            _HumdataLabel = HumdataLabel;
             _textSoilHumid = textSoilHumid;
-            _SoilHumidcheckBox = SoilHumidcheckBox;
             _SHumidCalibra = SHumidCalibra;
             _SHumidClear = SHumidClear;
 
@@ -74,20 +74,23 @@ namespace Soil_Serial
         public void SetSoilTemp(int Data)
         {
             Byte[] SendCmds = new Byte[8] { 0xf9, 0x07, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00 };
-
+            int Seq = 0;
+            int DataTemp = Convert.ToInt16(Convert.ToDouble(_SoilTempLabel.Text)*10);
+         
             ///加
-            if (Data > 0)
+            if (Data > DataTemp)
             {
+                Seq = Data - DataTemp;
                 SendCmds[3] = 0x01;
-                SendCmds[4] = (byte)((Data & 0xff00) >> 8);
-                SendCmds[5] = (byte)((Data & 0x00ff) >> 0);                
+                SendCmds[4] = (byte)((Seq & 0xff00) >> 8);
+                SendCmds[5] = (byte)((Seq & 0x00ff) >> 0);                
             }
-            else if (Data < 0)
+            else if (Data < DataTemp)
             {
-                Data *= -1;
+                Seq = DataTemp - Data;
                 SendCmds[3] = 0x02;
-                SendCmds[4] = (byte)((Data & 0xff00) >> 8);
-                SendCmds[5] = (byte)((Data & 0x00ff) >> 0);              
+                SendCmds[4] = (byte)((Seq & 0xff00) >> 8);
+                SendCmds[5] = (byte)((Seq & 0x00ff) >> 0);              
             }
             Rs485s.GetCrc(SendCmds, 6);
             _SerialDevice.Write(SendCmds, 0, 8);
@@ -112,24 +115,27 @@ namespace Soil_Serial
         public void SetSoilHumidity(int Data)
         {
             Byte[] SendCmds = new Byte[8] { 0xf9, 0x07, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00 };
+            int Seq = 0;
 
-            ///加
-            if(Data > 0)
+            ///加 
+            if (Data > Convert.ToInt16(Convert.ToDouble(_HumdataLabel.Text)))
             {
+                Seq = Data - Convert.ToInt16(Convert.ToDouble(_HumdataLabel.Text));
                 SendCmds[3] = 0x05;
-                SendCmds[4] = (byte)((Data & 0xff00) >> 8);
-                SendCmds[5] = (byte)((Data & 0x00ff) >> 0);                
+                SendCmds[4] = (byte)((Seq & 0xff00) >> 8);
+                SendCmds[5] = (byte)((Seq & 0x00ff) >> 0);                
             }
-            else if (Data < 0)
+            else if (Data < Convert.ToInt16(Convert.ToDouble(_HumdataLabel.Text)))
             {
-                Data *= -1;
+                Seq = Convert.ToInt16(Convert.ToDouble(_HumdataLabel.Text)) - Data;
                 SendCmds[3] = 0x06;
-                SendCmds[4] = (byte)((Data & 0xff00) >> 8);
-                SendCmds[5] = (byte)((Data & 0x00ff) >> 0);                         
+                SendCmds[4] = (byte)((Seq & 0xff00) >> 8);
+                SendCmds[5] = (byte)((Seq & 0x00ff) >> 0);                         
             }
             Rs485s.GetCrc(SendCmds, 6);
             _SerialDevice.Write(SendCmds, 0, 8);
             _RichTextBox1.AppendText(Rs485s.ByteToString(SendCmds));
+            _RichTextBox1.AppendText(Seq.ToString());
         }
 
         /// <summary>
