@@ -17,3 +17,4 @@ C:\Users\NBI\Desktop\土壤上位机\Soil_Serial\Soil_Serial\Soil_Serial\bin\Deb
 C:\Users\NBI\Desktop\土壤上位机\Soil_Serial\Soil_Serial\Soil_Serial\bin\Debug\Soil_Serial.pdb
 C:\Users\NBI\Desktop\土壤上位机\Soil_Serial\Soil_Serial\Soil_Serial\obj\Debug\Soil_Serial.exe
 C:\Users\NBI\Desktop\土壤上位机\Soil_Serial\Soil_Serial\Soil_Serial\obj\Debug\Soil_Serial.pdb
+C:\Users\NBI\Desktop\土壤上位机\Soil_Serial\Soil_Serial\Soil_Serial\obj\Debug\Soil_Serial.csprojAssemblyReference.cache

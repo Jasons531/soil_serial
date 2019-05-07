@@ -21,12 +21,17 @@ namespace Soil_Serial
         private Rs485 Rs485s = new Rs485();
         private SoilEC SoilEC = new SoilEC();
         private bool FirstSysTime = true;
-        private bool SysStartTime = true;
         private DateTime dt1;
         private DateTime dt2;
         private bool SoilECMode = false;
+        private int collectime = 0;
 
         internal TempHumidity TempHumiditys1 { get => TempHumiditys; set => TempHumiditys = value; }
+
+        public delegate void UpdateForm_dl();//声明委托
+
+        //使用多线程计时器
+        private System.Timers.Timer timer = new System.Timers.Timer();
 
         public Form1()
         {
@@ -34,7 +39,7 @@ namespace Soil_Serial
             InitSerialConfig();
             TempHumiditys.InitWidget(SerialDevice, textSoilTemp, SoilTempcheckBox, StempCalibra, StempClear,
                                     textSoilHumid, SoilHumidcheckBox, SHumidCalibra, SHumidClear, SoilCheck, richTextBox1);
-            richTextBox1.Text = "鼠标左键双击，清除显示";
+            richTextBox1.Text = "鼠标左键双击，清除显示";            
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -42,6 +47,39 @@ namespace Soil_Serial
 
         }
 
+#if  test
+        public void InitThread()
+        {
+            Thread thr = new Thread(new ThreadStart(GetSensorThread));//创建线程 
+            thr.Start();
+            thr.IsBackground = true; ///将线程转为后台线程
+        }
+
+        private void GetSensorThread()
+        {
+            this.BeginInvoke(new UpdateForm_dl(UpdateForm)); ///调用委托
+        }
+
+        public void UpdateForm()
+        {
+            //if (!SoilECMode)
+            //{
+            //    //if(SerialDevice.IsOpen)
+            //    {
+            //        //获取土壤温湿度传感器数据
+            richTextBox1.AppendText("send  ");
+            TempHumiditys.GetSoilTempHumidity();
+            Thread.Sleep(3000);
+            //    }
+
+            //}
+            //else
+            //{
+            //    //获取土壤EC传感器数据
+            //    GetSoilTempEC();
+        //}
+        }
+#endif
         /// <summary>
         /// 初始化串口
         /// </summary>
@@ -62,45 +100,10 @@ namespace Soil_Serial
             SetModebox.Items.Add("土壤电导率");
             SetModebox.SelectedIndex = 0;
 
-            SerialDevice.DataReceived += new SerialDataReceivedEventHandler(SerialDevice_DataReceived); //订阅委托     
-        }
-
-        ///// <summary>
-        ///// RS485_CRC校验
-        ///// </summary>
-        ///// <param name="data"></param>
-        ///// <param name="len"></param>
-        //private void Rs485Crc(byte[] data, byte len)
-        //{
-        //    ushort result = 0xffff;
-        //    byte i, j;
-
-        //    for (i = 0; i < len; i++)
-        //    {
-        //        result ^= data[i];
-        //        for (j = 0; j < 8; j++)
-        //        {
-        //            result = (result & 1) != 0 ? (ushort)((result >> 1) ^ 0xA001) : (ushort)(result >> 1);
-        //        }
-        //    }
-
-        //    data[len] = (byte)(result & 0x00ff);
-        //    data[++len] = (byte)((result & 0xff00) >> 8);
-        //}
-
-        /// <summary>
-        /// 获取土壤温湿度传感器数据命令
-        /// </summary>
-        private void GetSoilTempHumidity()
-        {
-            Byte[] SendCmds = new Byte[8] { 0xf9, 0x03, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00 };
-            Rs485s.GetCrc(SendCmds, 6);
-
-            SerialDevice.Write(SendCmds, 0, 8);
-            //byte[] bytes = System.Text.Encoding.Default.GetBytes(str);
-            //serialPort1.Write(bytes, 0, bytes.Length);
-            richTextBox1.AppendText(ByteToString(SendCmds)); 
-        }
+            SerialDevice.DataReceived += new SerialDataReceivedEventHandler(SerialDevice_DataReceived); //订阅委托 
+            timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
+            timer.Interval = 10;
+        }       
 
         /// <summary>
         /// 获取土壤EC传感器数据命令
@@ -110,11 +113,8 @@ namespace Soil_Serial
             Byte[] SendCmds = new Byte[8] { 0xf8, 0x03, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00 };
 
             Rs485s.GetCrc(SendCmds, 6);
-
             SerialDevice.Write(SendCmds, 0, 8);
-            //byte[] bytes = System.Text.Encoding.Default.GetBytes(str);
-            //serialPort1.Write(bytes, 0, bytes.Length);
-            richTextBox1.AppendText(ByteToString(SendCmds));
+            richTextBox1.AppendText(Rs485s.ByteToString(SendCmds));
         }
 
         /// <summary>
@@ -147,33 +147,44 @@ namespace Soil_Serial
                         SerialDevice.ReadTimeout = 1;
                         SerialDevice.WriteTimeout = 10;
                         SerialDevice.Open();
+                        FirstSysTime = true;
 
                         if (SetModebox.Text == "土壤温湿度")
                         {
-                            //获取土壤温湿度传感器数据
-                            GetSoilTempHumidity();
+                            SoilECMode = false;                       
                         }
                         else if (SetModebox.Text == "土壤电导率")
                         {
-                            //获取土壤EC传感器数据
-                            GetSoilTempEC();
+                            SoilECMode = true;                          
                         }
 
+
+                        timer.Start();
+
+                        if (CollectTime.Text == "采集时间(最好>5s)")
+                        {
+                            CollectTime.Text = "5";                            
+                        }
+                        collectime = Convert.ToInt32(CollectTime.Text);
+
+                        TempHumiditys.GetSoilTempHumidity();
                     }
                     catch (System.Exception ex)
                     {
-                        MessageBox.Show("Error:" + ex.Message, "Error");
+                        //MessageBox.Show("Error:" + ex.Message, "Error");
+                        MessageBox.Show("打开串口失败");
                         SerialId.Items.Clear();
                         OpenSerial.Text = "打开串口";
                         return;
                     }
                 }
-                OpenSerial.Text = "关闭串口";
+                OpenSerial.Text = "关闭串口";              
             }
             else
             {
                 OpenSerial.Text = "打开串口";
                 SerialDevice.Close();
+                timer.Stop();
             }
         }
 
@@ -203,6 +214,20 @@ namespace Soil_Serial
             }
         }
 
+        void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            if (!SoilECMode)
+            {
+                TempHumiditys.GetSoilTempHumidity();
+            }
+            else
+            {
+                //获取土壤EC传感器数据
+                //    GetSoilTempEC();
+            }
+            timer.Interval = collectime * 1000 + 10;
+        }
+
         /// <summary>
         /// 串口接收委托事件
         /// </summary>
@@ -217,105 +242,67 @@ namespace Soil_Serial
             if (SerialDevice.IsOpen)
             {
                 this.Invoke((EventHandler)(delegate
-                {
+                {                   
                     Byte[] ReceiveData = new Byte[SerialDevice.BytesToRead]; ///接收到ARM数据格式为char - 16进制模式
                     SerialDevice.Read(ReceiveData, 0, ReceiveData.Length);
 
-                    SoilTemp = (ReceiveData[3] & 0xff) << 8 | ReceiveData[4] & 0xff;
+                    if(ReceiveData[0] == 0xf8 || ReceiveData[0] == 0xf9)
+                    {
+                        SoilTemp = (ReceiveData[3] & 0xff) << 8 | ReceiveData[4] & 0xff;
 
-                    if (ReceiveData[0] == 0xf8)
-                    {
-                        SoilECMode = true;
-                        SoilEC = (ReceiveData[5] & 0xff) << 8 | ReceiveData[6] & 0xff;
-                    }
-                    else if (ReceiveData[0] == 0xf9)
-                    {
-                        SoilECMode = false;
-                        SoilHumidity = (ReceiveData[5] & 0xff) << 8 | ReceiveData[6] & 0xff;
-                    }
+                        if (SoilECMode)
+                        {
+                            SoilEC = (ReceiveData[5] & 0xff) << 8 | ReceiveData[6] & 0xff;
+                        }
+                        else
+                        {
+                            SoilHumidity = (ReceiveData[5] & 0xff) << 8 | ReceiveData[6] & 0xff;
+                        }
 
-                    if (FirstSysTime)
-                    {
-                        dt1 = DateTime.Parse(DateTime.Now.ToString());
-                        richTextBox1.AppendText(DateTime.Now.ToString("【HH:mm:ss:fff】"));
-                        FirstSysTime = false;
-                        SysStartTime = false;
-                    }
-                    if (SysStartTime)
-                    {
-                        SysStartTime = false;
-                        dt1 = DateTime.Parse(DateTime.Now.ToString());                     
-                    }                  
-                    dt2 = DateTime.Parse(DateTime.Now.ToLocalTime().ToString());
+                        if (FirstSysTime)
+                        {
+                            dt1 = DateTime.Parse(DateTime.Now.ToString());
+                            richTextBox1.AppendText(DateTime.Now.ToString("【HH:mm:ss】")); ///【HH:mm:ss:fff】
+                            FileShare(DateTime.Now.ToString("【HH:mm:ss】"));
+                            FirstSysTime = false;
+                        }
 
-                    //利用TimeSpan计算时间差 
-                    TimeSpan ts1 = new TimeSpan(dt1.Ticks);
-                    TimeSpan ts2 = new TimeSpan(dt2.Ticks);
-                    TimeSpan ts3 = ts2.Subtract(ts1); //ts2-ts1
-                    int sumMilliSeconds = int.Parse(ts3.TotalMilliseconds.ToString()); //得到相差毫秒数
+                        dt2 = DateTime.Parse(DateTime.Now.ToLocalTime().ToString());
+                        //利用TimeSpan计算时间差 
+                        TimeSpan ts1 = new TimeSpan(dt1.Ticks);
+                        TimeSpan ts2 = new TimeSpan(dt2.Ticks);
+                        TimeSpan ts3 = ts2.Subtract(ts1); //ts2-ts1
+                        int sumMilliSeconds = int.Parse(ts3.TotalMilliseconds.ToString()); //得到相差毫秒数
 
-                    if(CollectTime.Text == "采集时间(最好>5s)")
-                    {
-                        CollectTime.Text = "5";
-                    }
-             
-                    if (sumMilliSeconds >= Convert.ToInt32(CollectTime.Text) * 1000) //判断是否大于CollectTime.Text
-                    {
-                        SysStartTime = true;
-                        richTextBox1.AppendText(DateTime.Now.ToString("【HH:mm:ss:fff】"));
-                        FileShare(DateTime.Now.ToString("【HH:mm:ss:fff】"));
-                    }
-
-                    ///接收字符
-                    //richTextBox1.AppendText(System.Text.Encoding.Default.GetString(ReceiveData));
-
-                    //16进制输出
-                    //richTextBox1.AppendText(ByteToString(ReceiveData));
-                    if (SoilECMode)
-                    {
-                        richTextBox1.AppendText("土壤电导率: " + "温度: " + (float)SoilTemp / 10 + "℃" + "   " + "EC: " + (float)SoilEC / 1000 + "ds/cm");
+                        if (sumMilliSeconds >= Convert.ToInt32(CollectTime.Text) * 1000) //判断是否大于CollectTime.Text
+                        {
+                            dt1 = DateTime.Parse(DateTime.Now.ToString());
+                            richTextBox1.AppendText(DateTime.Now.ToString("【HH:mm:ss】"));
+                            FileShare(DateTime.Now.ToString("【HH:mm:ss】"));
+                        }
+                        if (SoilECMode)
+                        {
+                            richTextBox1.AppendText("土壤电导率: " + "温度: " + (float)(SoilTemp / 10.0) + "℃" + "   " + "EC: " + (float)(SoilEC / 1000.0) + "ds/cm" + "\r\n");
+                            FileShare("土壤电导率: " + "温度: " + (float)SoilTemp / 10 + "℃" + "   " + "EC: " + (float)SoilEC / 1000 + "ds/cm" + "\r\n");
+                        }
+                        else
+                        {
+                            richTextBox1.AppendText("土壤温湿度: " + "温度: " + (float)SoilTemp / 10 + "℃" + "     " + "湿度: " + (float)SoilHumidity / 10 + "％" + "\r\n");
+                            FileShare("土壤温湿度: " + "温度: " + (float)SoilTemp / 10 + "℃" + "   " + "湿度: " + (float)SoilHumidity / 10 + "％" + "\r\n");
+                        }
                     }
                     else
                     {
-                        richTextBox1.AppendText("土壤温湿度: " + "温度: " + (float)SoilTemp / 10 + "℃" + "   " + "湿度: " + (float)SoilHumidity / 10 + "％");
+                        ///接收字符
+                        richTextBox1.AppendText(System.Text.Encoding.Default.GetString(ReceiveData));
+
+                        //16进制输出
+                        //richTextBox1.AppendText(ByteToString(ReceiveData));
+                        //FileShare(System.Text.Encoding.Default.GetString(ReceiveData));
                     }
 
-                    FileShare(System.Text.Encoding.Default.GetString(ReceiveData));                       
                 }));
             }
-        }
-
-        /// <summary>
-        /// byte转换hex字符串输出
-        /// </summary>
-        /// <param name="InBytes"></param>
-        /// <returns></returns>
-        public static string ByteToString(byte[] InBytes)
-        {
-            string StringOut = "";
-            foreach (byte InByte in InBytes)
-            {
-                StringOut = StringOut + String.Format("{0:X2} ", InByte); ///相当于byte转hex,hex.tostring转为字符串
-            }
-            return StringOut;
-        }
-
-        /// <summary>
-        /// 字符串转换byte
-        /// </summary>
-        /// <param name="InString"></param>
-        /// <returns></returns>
-        public static byte[] StringToByte(string InString)
-        {
-            string[] ByteStrings;
-            ByteStrings = InString.Split(" ".ToCharArray());
-            byte[] ByteOut;
-            ByteOut = new byte[ByteStrings.Length - 1];
-            for (int i = 0; i == ByteStrings.Length - 1; i++)
-            {
-                ByteOut[i] = Convert.ToByte(("0x" + ByteStrings[i]));
-            }
-            return ByteOut;
         }
 
         /// <summary>
@@ -419,8 +406,15 @@ namespace Soil_Serial
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void StempCalibra_Click(object sender, EventArgs e)
-        {
-            TempHumiditys.StempCalibra();
+        {           
+            timer.Stop();
+         
+            richTextBox1.AppendText(textSoilTemp.Text);
+            int data = Convert.ToInt16(Convert.ToDouble(textSoilTemp.Text) * 10);
+            TempHumiditys.SetSoilTemp(data);
+            Thread.Sleep(1000);
+            TempHumiditys.GetSoilTempHumidity();
+            timer.Start();
         }
 
         /// <summary>
@@ -430,7 +424,7 @@ namespace Soil_Serial
         /// <param name="e"></param>
         private void StempClear_Click(object sender, EventArgs e)
         {
-            TempHumiditys.StempClear();
+            TempHumiditys.ClearSoilTemp();
         }
 
     }
