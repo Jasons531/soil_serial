@@ -124,7 +124,7 @@ namespace Soil_Serial
             _SerialDevice.Write(SendCmds, 0, 8);
         }
 
-        public void SetSoilEC(double[] Data)
+        public int[] SetSoilEC(double[] Data)
         {
             Byte[] SendCmds = new Byte[12] { 0xf8, 0x07, 0x03, 0x05, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
             
@@ -160,12 +160,13 @@ namespace Soil_Serial
 
                 Rs485s.GetCrc(SendCmds, 10);
                 _SerialDevice.Write(SendCmds, 0, 12);
-                _RichTextBox1.AppendText(Rs485s.ByteToString(SendCmds));
+                //_RichTextBox1.AppendText(Rs485s.ByteToString(SendCmds));                
             }
             else
             {
                 MessageBox.Show("请确保土壤电导率传感器三点读数不为0");
-            }                     
+            }
+            return SensorData;
         }
 
         /// <summary>

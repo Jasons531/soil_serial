@@ -687,6 +687,7 @@ namespace Soil_Serial
             if (SoilECMode)
             {
                 double[] data = new double[3];
+                int[] SensorData = new int[3];
                 if (textEC_A.Text.Trim() == String.Empty && textEC_B.Text.Trim() == String.Empty && textEC_C.Text.Trim() == String.Empty)
                 {
                     MessageBox.Show("请输入土壤EC传感器三点标定数值");
@@ -722,7 +723,8 @@ namespace Soil_Serial
                     data[0] = Convert.ToDouble(textEC_A.Text);
                     data[1] = Convert.ToDouble(textEC_B.Text);
                     data[2] = Convert.ToDouble(textEC_C.Text);
-                    SensorECs.SetSoilEC(data);
+                    SensorData = SensorECs.SetSoilEC(data);
+                    FileShare("电导率标定参数：EC_A" + data[0] + "  " +"EC_B" + data[1] + "  " + "EC_C" + data[2]);
                     Thread.Sleep(2000);
                     timer.Start();
                 }
