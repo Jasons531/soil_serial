@@ -12,8 +12,6 @@ namespace Soil_Serial
     public class TempHumidity
     {
         private Rs485 Rs485s = new Rs485();
-
-
         private SerialPort _SerialDevice;
         /// <summary>
         /// 温度
@@ -94,7 +92,7 @@ namespace Soil_Serial
             }
             Rs485s.GetCrc(SendCmds, 6);
             _SerialDevice.Write(SendCmds, 0, 8);
-            _RichTextBox1.AppendText(Rs485s.ByteToString(SendCmds));
+            //_RichTextBox1.AppendText(Rs485s.ByteToString(SendCmds));
         }
 
         /// <summary>
@@ -134,8 +132,8 @@ namespace Soil_Serial
             }
             Rs485s.GetCrc(SendCmds, 6);
             _SerialDevice.Write(SendCmds, 0, 8);
-            _RichTextBox1.AppendText(Rs485s.ByteToString(SendCmds));
-            _RichTextBox1.AppendText(Seq.ToString());
+            //_RichTextBox1.AppendText(Rs485s.ByteToString(SendCmds));
+            //_RichTextBox1.AppendText(Seq.ToString());
         }
 
         /// <summary>

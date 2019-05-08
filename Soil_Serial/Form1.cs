@@ -18,8 +18,8 @@ namespace Soil_Serial
     {
         public SerialPort SerialDevice = new SerialPort();
         private TempHumidity TempHumiditys = new TempHumidity();
+        private SensorEC SensorECs = new SensorEC();
         private Rs485 Rs485s = new Rs485();
-        private SoilEC SoilEC = new SoilEC();
         private bool FirstSysTime = true;
         private DateTime dt1;
         private DateTime dt2;
@@ -39,7 +39,10 @@ namespace Soil_Serial
             InitializeComponent();
             InitSerialConfig();
             TempHumiditys.InitWidget(SerialDevice, SoilTempLabel, textSoilTemp, StempCalibra, StempClear, HumdataLabel,
-                                    textSoilHumid, SHumidCalibra, SHumidClear, SoilCheck, richTextBox1);
+                                     textSoilHumid, SHumidCalibra, SHumidClear, SoilCheck, richTextBox1);
+            SensorECs.InitWidget(SerialDevice, ECTempLabel, textECTemp, ECtempCalibra, ECTempClear, ECALabel, textEC_A, ECACalibra, ECAClear,
+                                 ECBLabel, textEC_B, ECBCalibra, ECBClear, ECCLabel, textEC_C, ECCCalibra, ECCClear,ECCheck, richTextBox1);
+         
             richTextBox1.Text = "鼠标左键双击，清除显示";            
         }
 
@@ -218,7 +221,7 @@ namespace Soil_Serial
             else
             {
                 //获取土壤EC传感器数据
-                //    GetSoilTempEC();
+                SensorECs.GetSoilTempEC();
             }
             timer.Interval = collectime * 1000 + 50;
         }
@@ -238,154 +241,170 @@ namespace Soil_Serial
             {
                 this.Invoke((EventHandler)(delegate
                 {
-                Byte[] ReceiveData = new Byte[SerialDevice.BytesToRead]; ///接收到ARM数据格式为char - 16进制模式
-                SerialDevice.Read(ReceiveData, 0, ReceiveData.Length);
+                    Byte[] ReceiveData = new Byte[SerialDevice.BytesToRead]; ///接收到ARM数据格式为char - 16进制模式
+                    SerialDevice.Read(ReceiveData, 0, ReceiveData.Length);
 
-                if (ReceiveData[0] == 0xf8 || ReceiveData[0] == 0xf9)
-                {
-                    if (FirstSysTime)
+                    if (ReceiveData[0] == 0xf8 || ReceiveData[0] == 0xf9)
                     {
-                        dt1 = DateTime.Parse(DateTime.Now.ToString());
-                        richTextBox1.AppendText(DateTime.Now.ToString("【HH:mm:ss】")); ///【HH:mm:ss:fff】
-                        FileShare(DateTime.Now.ToString("【HH:mm:ss】"));
-                        FirstSysTime = false;
-                    }
-
-                    dt2 = DateTime.Parse(DateTime.Now.ToLocalTime().ToString());
-                    //利用TimeSpan计算时间差 
-                    TimeSpan ts1 = new TimeSpan(dt1.Ticks);
-                    TimeSpan ts2 = new TimeSpan(dt2.Ticks);
-                    TimeSpan ts3 = ts2.Subtract(ts1); //ts2-ts1
-                    int sumMilliSeconds = int.Parse(ts3.TotalMilliseconds.ToString()); //得到相差毫秒数
-
-                    if (sumMilliSeconds >= Convert.ToInt32(CollectTime.Text) * 1000) //判断是否大于CollectTime.Text
-                    {
-                        dt1 = DateTime.Parse(DateTime.Now.ToString());
-                        richTextBox1.AppendText(DateTime.Now.ToString("【HH:mm:ss】"));
-                        FileShare(DateTime.Now.ToString("【HH:mm:ss】"));
-                    }
-                    //richTextBox1.AppendText(Rs485s.ByteToString(ReceiveData));
-                    if (SoilECMode)
-                    {
-                        if (ReceiveData[2] == 0x04)
+                        if (FirstSysTime)
                         {
-                            SoilTemp = (ReceiveData[3] & 0xff) << 8 | ReceiveData[4] & 0xff;
-                            SoilEC = (ReceiveData[5] & 0xff) << 8 | ReceiveData[6] & 0xff;
-                            buffer = "土壤电导率: " + "温度: " + (float)(SoilTemp / 10.0) + "℃" + "   " + "EC: " + (float)(SoilEC / 1000.0) + "ds/cm" + "\r\n";
-                            //richTextBox1.AppendText("土壤电导率: " + "温度: " + (float)(SoilTemp / 10.0) + "℃" + "   " + "EC: " + (float)(SoilEC / 1000.0) + "ds/cm" + "\r\n");
-                            //FileShare("土壤电导率: " + "温度: " + (float)SoilTemp / 10 + "℃" + "   " + "EC: " + (float)SoilEC / 1000 + "ds/cm" + "\r\n");
+                            dt1 = DateTime.Parse(DateTime.Now.ToString());
+                            richTextBox1.AppendText(DateTime.Now.ToString("【HH:mm:ss】")); ///【HH:mm:ss:fff】
+                            FileShare(DateTime.Now.ToString("【HH:mm:ss】"));
+                            FirstSysTime = false;
                         }
-                        else
+
+                        dt2 = DateTime.Parse(DateTime.Now.ToLocalTime().ToString());
+                        //利用TimeSpan计算时间差 
+                        TimeSpan ts1 = new TimeSpan(dt1.Ticks);
+                        TimeSpan ts2 = new TimeSpan(dt2.Ticks);
+                        TimeSpan ts3 = ts2.Subtract(ts1); //ts2-ts1
+                        int sumMilliSeconds = int.Parse(ts3.TotalMilliseconds.ToString()); //得到相差毫秒数
+
+                        if (sumMilliSeconds >= Convert.ToInt32(CollectTime.Text) * 1000) //判断是否大于CollectTime.Text
                         {
-                            switch (ReceiveData[3])
+                            dt1 = DateTime.Parse(DateTime.Now.ToString());
+                            richTextBox1.AppendText(DateTime.Now.ToString("【HH:mm:ss】"));
+                            FileShare(DateTime.Now.ToString("【HH:mm:ss】"));
+                        }
+                        //richTextBox1.AppendText(Rs485s.ByteToString(ReceiveData));
+                        if (SoilECMode)
+                        {
+                            if (ReceiveData[2] == 0x04)
                             {
-                                case 0x01:
-                                case 0x02:
-                                    buffer = "土壤温度标定完成";
-                                    break;
-                                case 0x03:
-                                    buffer = "土壤温度清除标定";
-                                    break;
-                                case 0x05:
-                                case 0x06:
-                                    buffer = "土壤EC_L标定完成";
-                                    break;
-                                case 0x07:
-                                case 0x08:
-                                    buffer = "土壤EC_M标定完成";
-                                    break;
-                                case 0x09:
-                                case 0x0A:
-                                    buffer = "土壤EC_H标定完成";
-                                    break;
-                                case 0x0B:
-                                    buffer = "土壤EC清除三点标定完成";
-                                    break;
-                                case 0x0C:
-                                    buffer = "查询土壤温度、EC";
-                                    break;
-                                default:
-                                    break;
+                                SoilTemp = (ReceiveData[3] & 0xff) << 8 | ReceiveData[4] & 0xff;
+                                SoilEC = (ReceiveData[5] & 0xff) << 8 | ReceiveData[6] & 0xff;
+                                ECTempLabel.Text = ((float)SoilTemp / 10).ToString();
+                                if ((float)(SoilEC / 1000.0) < 0.5)
+                                {
+                                    ECALabel.Text = ((float)SoilEC / 1000).ToString();
+                                }
+                                else if ((float)(SoilEC / 1000.0) > 1 && (float)(SoilEC / 1000.0) < 3)
+                                {
+                                    ECBLabel.Text = ((float)SoilEC / 1000).ToString();
+                                }
+                                else if ((float)(SoilEC / 1000.0) > 9 && (float)(SoilEC / 1000.0) < 10)
+                                {
+                                    ECCLabel.Text = ((float)SoilEC / 1000).ToString();
+                                }
+
+                                buffer = "土壤电导率: " + "温度: " + (float)(SoilTemp / 10.0) + "℃" + "   " + "EC: " + (float)(SoilEC / 1000.0) + "ds/cm";
+                                //richTextBox1.AppendText("土壤电导率: " + "温度: " + (float)(SoilTemp / 10.0) + "℃" + "   " + "EC: " + (float)(SoilEC / 1000.0) + "ds/cm" + "\r\n");
+                                //FileShare("土壤电导率: " + "温度: " + (float)SoilTemp / 10 + "℃" + "   " + "EC: " + (float)SoilEC / 1000 + "ds/cm" + "\r\n");
+                            }
+                            else
+                            {
+                                switch (ReceiveData[3])
+                                {
+                                    case 0x01:
+                                    case 0x02:
+                                        buffer = "土壤温度标定完成";
+                                        break;
+                                    case 0x03:
+                                        buffer = "土壤温度清除标定";
+                                        break;
+                                    case 0x05:
+                                    case 0x06:
+                                        buffer = "土壤EC_L标定完成";
+                                        break;
+                                    case 0x07:
+                                    case 0x08:
+                                        buffer = "土壤EC_M标定完成";
+                                        break;
+                                    case 0x09:
+                                    case 0x0A:
+                                        buffer = "土壤EC_H标定完成";
+                                        break;
+                                    case 0x0B:
+                                        buffer = "土壤EC清除三点标定完成";
+                                        break;
+                                    case 0x0C:
+                                        buffer = "查询土壤温度、EC";
+                                        break;
+                                    default:
+                                        break;
+                                }                              
                             }
                             richTextBox1.AppendText(buffer + "\r\n");
                             FileShare(buffer + "\r\n");
                         }
-                    }
-                    else
-                    {
-                        if (ReceiveData[2] == 0x04)
+                        else
                         {
-                            SoilTemp = (ReceiveData[3] & 0xff) << 8 | ReceiveData[4] & 0xff;
-                            SoilHumidity = (ReceiveData[5] & 0xff) << 8 | ReceiveData[6] & 0xff;
+                            if (ReceiveData[2] == 0x04)
+                            {
+                                SoilTemp = (ReceiveData[3] & 0xff) << 8 | ReceiveData[4] & 0xff;
+                                SoilHumidity = (ReceiveData[5] & 0xff) << 8 | ReceiveData[6] & 0xff;
 
-                            SoilTempLabel.Text = ((float)SoilTemp / 10).ToString();
-                            HumdataLabel.Text = (((ReceiveData[7] & 0xff) << 8 | ReceiveData[8] & 0xff)).ToString();
-                            HumidityLabel.Text = ((float)SoilHumidity / 10).ToString();
-                            //buffer = "土壤温湿度: " + "温度: " + (float)SoilTemp / 10 + "℃" + "     " + "湿度: " + (float)SoilHumidity / 10 + "％";
-                            richTextBox1.AppendText("土壤温湿度: " + "温度: " + (float)SoilTemp / 10 + "℃" + "     " + "湿度: " + (float)SoilHumidity / 10 + "％" + "\r\n");
-                            FileShare("土壤温湿度: " + "温度: " + (float)SoilTemp / 10 + "℃" + "   " + "湿度: " + (float)SoilHumidity / 10 + "％" + "\r\n");
+                                SoilTempLabel.Text = ((float)SoilTemp / 10).ToString();
+                                HumdataLabel.Text = (((ReceiveData[7] & 0xff) << 8 | ReceiveData[8] & 0xff)).ToString();
+                                HumidityLabel.Text = ((float)SoilHumidity / 10).ToString();
+                                //buffer = "土壤温湿度: " + "温度: " + (float)SoilTemp / 10 + "℃" + "     " + "湿度: " + (float)SoilHumidity / 10 + "％";
+                                richTextBox1.AppendText("土壤温湿度: " + "温度: " + (float)SoilTemp / 10 + "℃" + "     " + "湿度: " + (float)SoilHumidity / 10 + "％" + "\r\n");
+                                FileShare("土壤温湿度: " + "温度: " + (float)SoilTemp / 10 + "℃" + "   " + "湿度: " + (float)SoilHumidity / 10 + "％" + "\r\n");
+                            }
+                            else
+                            {
+                                switch (ReceiveData[3])
+                                {
+                                    case 0x01:
+                                    case 0x02:
+                                        buffer = "土壤温度标定完成";
+                                        break;
+                                    case 0x03:
+                                        buffer = "土壤温度清除标定";
+                                        break;
+                                    case 0x05:
+                                    case 0x06:
+                                        buffer = "土壤湿度标定完成";
+                                        break;
+                                    case 0x07:
+                                        buffer = "土壤湿度清除标定";
+                                        break;
+                                    case 0x08:
+                                        int datatemp = 0;
+                                        datatemp = (((ReceiveData[4] & 0xff) << 8 | ReceiveData[5] & 0xff));
+                                        if(datatemp<=0x8000)
+                                        {
+                                           CalibrasoiltempLabel.Text = ((float)datatemp/10).ToString();
+                                        }
+                                        else
+                                        {
+                                            datatemp = 0xffff - datatemp;
+                                            datatemp += 1;
+                                           CalibrasoiltempLabel.Text = ((float)datatemp / -10).ToString();
+                                        }
+                                        datatemp = ((ReceiveData[6] & 0xff) << 8 | ReceiveData[7] & 0xff);
+                                        if (datatemp <= 0x8000)
+                                        {
+                                           CalibrahumidityLabel.Text = datatemp.ToString();
+                                        }
+                                        else
+                                        {
+                                           datatemp = 0xffff - datatemp;
+                                           datatemp += 1;
+                                           CalibrahumidityLabel.Text = (datatemp * -1).ToString();
+                                        }
+                                        buffer = "温度补偿：" + CalibrasoiltempLabel.Text + "℃"+"    " + "湿度补偿：" + CalibrahumidityLabel.Text;
+                                        //richTextBox1.AppendText(Rs485s.ByteToString(ReceiveData));
+                                        break;
+                                    default:
+                                        break;
+                                    }
+                                    richTextBox1.AppendText(buffer + "\r\n");
+                                    FileShare(buffer + "\r\n");
+                                }
+                            }
+
                         }
                         else
                         {
-                            switch (ReceiveData[3])
-                            {
-                                case 0x01:
-                                case 0x02:
-                                    buffer = "土壤温度标定完成";
-                                    break;
-                                case 0x03:
-                                    buffer = "土壤温度清除标定";
-                                    break;
-                                case 0x05:
-                                case 0x06:
-                                    buffer = "土壤湿度标定完成";
-                                    break;
-                                case 0x07:
-                                    buffer = "土壤湿度清除标定";
-                                    break;
-                                case 0x08:
-                                    float datatemp = 0;
-                                    datatemp = (float)(((ReceiveData[4] & 0xff) << 8 | ReceiveData[5] & 0xff)) / 10;
-                                    if(datatemp>0)
-                                    {
-                                       CalibrasoiltempLabel.Text = datatemp.ToString();
-                                    }
-                                    else
-                                    {
-                                       CalibrasoiltempLabel.Text = (datatemp*-1).ToString();
-                                    }
-                                    datatemp = ((ReceiveData[6] & 0xff) << 8 | ReceiveData[7] & 0xff);
-                                    if (datatemp >= 0)
-                                    {
-                                       CalibrahumidityLabel.Text = datatemp.ToString();
-                                    }
-                                    else
-                                    {
-                                       datatemp = 0xffff - datatemp;
-                                       datatemp += 1;
-                                       CalibrahumidityLabel.Text = (datatemp * -1).ToString();
-                                    }
-                                    buffer = "温度补偿：" + CalibrasoiltempLabel.Text + "℃"+"    " + "湿度补偿：" + CalibrahumidityLabel.Text;
-                                    richTextBox1.AppendText(Rs485s.ByteToString(ReceiveData));
-                                    break;
-                                default:
-                                    break;
-                                }
-                                richTextBox1.AppendText(buffer + "\r\n");
-                                FileShare(buffer + "\r\n");
-                            }
+                            ///接收字符
+                            richTextBox1.AppendText(System.Text.Encoding.Default.GetString(ReceiveData));
+
+                            //16进制输出
+                            //richTextBox1.AppendText(ByteToString(ReceiveData));
+                            //FileShare(System.Text.Encoding.Default.GetString(ReceiveData));
                         }
-
-                    }
-                    else
-                    {
-                        ///接收字符
-                        richTextBox1.AppendText(System.Text.Encoding.Default.GetString(ReceiveData));
-
-                        //16进制输出
-                        //richTextBox1.AppendText(ByteToString(ReceiveData));
-                        //FileShare(System.Text.Encoding.Default.GetString(ReceiveData));
-                    }
 
                 }));
             }
@@ -492,15 +511,20 @@ namespace Soil_Serial
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void StempCalibra_Click(object sender, EventArgs e)
-        {           
-            timer.Stop();
-         
-            richTextBox1.AppendText(textSoilTemp.Text);
-            int data = Convert.ToInt16(Convert.ToDouble(textSoilTemp.Text) * 10);
-            TempHumiditys.SetSoilTemp(data);
-            Thread.Sleep(2000);
-    
-            timer.Start();
+        {                    
+            if(textSoilTemp.Text.Trim() == String.Empty)
+            {
+                MessageBox.Show("请输入土壤温度传感器温度标定数值");
+            }
+            else
+            {
+                timer.Stop();
+                richTextBox1.AppendText(textSoilTemp.Text);
+                int data = Convert.ToInt16(Convert.ToDouble(textSoilTemp.Text) * 10);
+                TempHumiditys.SetSoilTemp(data);
+                Thread.Sleep(2000);
+                timer.Start();
+            }           
         }
 
         /// <summary>
@@ -513,6 +537,11 @@ namespace Soil_Serial
             TempHumiditys.ClearSoilTemp();
         }
 
+        /// <summary>
+        /// 土壤湿度标定控件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SHumidCalibra_Click(object sender, EventArgs e)
         {
             timer.Stop();
@@ -525,6 +554,11 @@ namespace Soil_Serial
             timer.Start();
         }
 
+        /// <summary>
+        /// 土壤湿度清零控件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SHumidClear_Click(object sender, EventArgs e)
         {
             timer.Stop();
@@ -534,6 +568,11 @@ namespace Soil_Serial
             timer.Start();
         }
 
+        /// <summary>
+        /// 土壤温湿度补偿查询
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SoilCheck_Click(object sender, EventArgs e)
         {
             timer.Stop();
@@ -541,6 +580,38 @@ namespace Soil_Serial
             Thread.Sleep(2000);
 
             timer.Start();
+        }
+
+        /// <summary>
+        /// EC传感器温度标定控件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ECtempCalibra_Click(object sender, EventArgs e)
+        {
+            if (textECTemp.Text.Trim() == String.Empty)
+            {
+                MessageBox.Show("请输入土壤EC传感器温度标定数值");
+            }
+            else
+            {
+                timer.Stop();
+                richTextBox1.AppendText(textECTemp.Text);
+                int data = Convert.ToInt16(Convert.ToDouble(textECTemp.Text) * 10);
+                SensorECs.SetSoilTemp(data);
+                Thread.Sleep(2000);
+                timer.Start();
+            }
+        }
+
+        /// <summary>
+        /// EC传感器温度标定清零控件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ECTempClear_Click(object sender, EventArgs e)
+        {
+            SensorECs.ClearSoilTemp();
         }
     }
 }

@@ -178,6 +178,7 @@
             this.ECtempCalibra.TabIndex = 10;
             this.ECtempCalibra.Text = "标定";
             this.ECtempCalibra.UseVisualStyleBackColor = true;
+            this.ECtempCalibra.Click += new System.EventHandler(this.ECtempCalibra_Click);
             // 
             // label4
             // 
@@ -391,6 +392,7 @@
             this.ECTempClear.TabIndex = 35;
             this.ECTempClear.Text = "清零";
             this.ECTempClear.UseVisualStyleBackColor = true;
+            this.ECTempClear.Click += new System.EventHandler(this.ECTempClear_Click);
             // 
             // ECCheck
             // 
