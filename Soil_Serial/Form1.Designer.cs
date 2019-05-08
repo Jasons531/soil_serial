@@ -40,16 +40,12 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.ECAClear = new System.Windows.Forms.Button();
-            this.ECACalibra = new System.Windows.Forms.Button();
+            this.ECClear = new System.Windows.Forms.Button();
+            this.ECCalibra = new System.Windows.Forms.Button();
             this.textEC_A = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
-            this.ECBClear = new System.Windows.Forms.Button();
-            this.ECBCalibra = new System.Windows.Forms.Button();
             this.textEC_B = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
-            this.ECCClear = new System.Windows.Forms.Button();
-            this.ECCCalibra = new System.Windows.Forms.Button();
             this.textEC_C = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
@@ -102,6 +98,9 @@
             this.label27 = new System.Windows.Forms.Label();
             this.label28 = new System.Windows.Forms.Label();
             this.label29 = new System.Windows.Forms.Label();
+            this.label30 = new System.Windows.Forms.Label();
+            this.CurrentEcLabel = new System.Windows.Forms.LinkLabel();
+            this.label31 = new System.Windows.Forms.Label();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -210,106 +209,72 @@
             this.label6.TabIndex = 14;
             this.label6.Text = "土壤EC温度标定";
             // 
-            // ECAClear
+            // ECClear
             // 
-            this.ECAClear.Location = new System.Drawing.Point(303, 525);
-            this.ECAClear.Name = "ECAClear";
-            this.ECAClear.Size = new System.Drawing.Size(69, 34);
-            this.ECAClear.TabIndex = 18;
-            this.ECAClear.Text = "清零";
-            this.ECAClear.UseVisualStyleBackColor = true;
+            this.ECClear.Location = new System.Drawing.Point(328, 596);
+            this.ECClear.Name = "ECClear";
+            this.ECClear.Size = new System.Drawing.Size(78, 49);
+            this.ECClear.TabIndex = 18;
+            this.ECClear.Text = "清零";
+            this.ECClear.UseVisualStyleBackColor = true;
+            this.ECClear.Click += new System.EventHandler(this.ECClear_Click);
             // 
-            // ECACalibra
+            // ECCalibra
             // 
-            this.ECACalibra.Location = new System.Drawing.Point(212, 525);
-            this.ECACalibra.Name = "ECACalibra";
-            this.ECACalibra.Size = new System.Drawing.Size(72, 34);
-            this.ECACalibra.TabIndex = 17;
-            this.ECACalibra.Text = "标定";
-            this.ECACalibra.UseVisualStyleBackColor = true;
+            this.ECCalibra.Location = new System.Drawing.Point(328, 531);
+            this.ECCalibra.Name = "ECCalibra";
+            this.ECCalibra.Size = new System.Drawing.Size(78, 47);
+            this.ECCalibra.TabIndex = 17;
+            this.ECCalibra.Text = "标定";
+            this.ECCalibra.UseVisualStyleBackColor = true;
+            this.ECCalibra.Click += new System.EventHandler(this.ECCalibra_Click);
             // 
             // textEC_A
             // 
-            this.textEC_A.Location = new System.Drawing.Point(98, 534);
+            this.textEC_A.Location = new System.Drawing.Point(227, 531);
             this.textEC_A.Name = "textEC_A";
-            this.textEC_A.Size = new System.Drawing.Size(100, 25);
+            this.textEC_A.Size = new System.Drawing.Size(86, 25);
             this.textEC_A.TabIndex = 16;
             // 
             // label7
             // 
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("宋体", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label7.Location = new System.Drawing.Point(8, 525);
+            this.label7.Location = new System.Drawing.Point(8, 539);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(88, 19);
             this.label7.TabIndex = 15;
             this.label7.Text = "EC<0.5：";
             // 
-            // ECBClear
-            // 
-            this.ECBClear.Location = new System.Drawing.Point(303, 598);
-            this.ECBClear.Name = "ECBClear";
-            this.ECBClear.Size = new System.Drawing.Size(69, 34);
-            this.ECBClear.TabIndex = 22;
-            this.ECBClear.Text = "清零";
-            this.ECBClear.UseVisualStyleBackColor = true;
-            // 
-            // ECBCalibra
-            // 
-            this.ECBCalibra.Location = new System.Drawing.Point(212, 598);
-            this.ECBCalibra.Name = "ECBCalibra";
-            this.ECBCalibra.Size = new System.Drawing.Size(72, 34);
-            this.ECBCalibra.TabIndex = 21;
-            this.ECBCalibra.Text = "标定";
-            this.ECBCalibra.UseVisualStyleBackColor = true;
-            // 
             // textEC_B
             // 
-            this.textEC_B.Location = new System.Drawing.Point(100, 605);
+            this.textEC_B.Location = new System.Drawing.Point(227, 576);
             this.textEC_B.Name = "textEC_B";
-            this.textEC_B.Size = new System.Drawing.Size(98, 25);
+            this.textEC_B.Size = new System.Drawing.Size(86, 25);
             this.textEC_B.TabIndex = 20;
             // 
             // label8
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("宋体", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label8.Location = new System.Drawing.Point(8, 598);
+            this.label8.Location = new System.Drawing.Point(8, 584);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(88, 19);
             this.label8.TabIndex = 19;
             this.label8.Text = "1<EC<3：";
             // 
-            // ECCClear
-            // 
-            this.ECCClear.Location = new System.Drawing.Point(303, 674);
-            this.ECCClear.Name = "ECCClear";
-            this.ECCClear.Size = new System.Drawing.Size(68, 34);
-            this.ECCClear.TabIndex = 26;
-            this.ECCClear.Text = "清零";
-            this.ECCClear.UseVisualStyleBackColor = true;
-            // 
-            // ECCCalibra
-            // 
-            this.ECCCalibra.Location = new System.Drawing.Point(212, 674);
-            this.ECCCalibra.Name = "ECCCalibra";
-            this.ECCCalibra.Size = new System.Drawing.Size(72, 34);
-            this.ECCCalibra.TabIndex = 25;
-            this.ECCCalibra.Text = "标定";
-            this.ECCCalibra.UseVisualStyleBackColor = true;
-            // 
             // textEC_C
             // 
-            this.textEC_C.Location = new System.Drawing.Point(101, 681);
+            this.textEC_C.Location = new System.Drawing.Point(227, 620);
             this.textEC_C.Name = "textEC_C";
-            this.textEC_C.Size = new System.Drawing.Size(97, 25);
+            this.textEC_C.Size = new System.Drawing.Size(86, 25);
             this.textEC_C.TabIndex = 24;
             // 
             // label9
             // 
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("宋体", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label9.Location = new System.Drawing.Point(7, 672);
+            this.label9.Location = new System.Drawing.Point(5, 628);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(98, 19);
             this.label9.TabIndex = 23;
@@ -396,12 +361,13 @@
             // 
             // ECCheck
             // 
-            this.ECCheck.Location = new System.Drawing.Point(227, 766);
+            this.ECCheck.Location = new System.Drawing.Point(234, 720);
             this.ECCheck.Name = "ECCheck";
             this.ECCheck.Size = new System.Drawing.Size(86, 48);
             this.ECCheck.TabIndex = 34;
             this.ECCheck.Text = "补偿查询";
             this.ECCheck.UseVisualStyleBackColor = true;
+            this.ECCheck.Click += new System.EventHandler(this.ECCheck_Click);
             // 
             // richTextBox1
             // 
@@ -409,7 +375,7 @@
             this.richTextBox1.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.richTextBox1.Location = new System.Drawing.Point(457, 113);
             this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(597, 595);
+            this.richTextBox1.Size = new System.Drawing.Size(597, 679);
             this.richTextBox1.TabIndex = 38;
             this.richTextBox1.Text = "";
             this.richTextBox1.TextChanged += new System.EventHandler(this.RichTextBox1_TextChanged);
@@ -539,7 +505,7 @@
             // CalibrasoiltempLabel
             // 
             this.CalibrasoiltempLabel.AutoSize = true;
-            this.CalibrasoiltempLabel.Location = new System.Drawing.Point(114, 239);
+            this.CalibrasoiltempLabel.Location = new System.Drawing.Point(109, 237);
             this.CalibrasoiltempLabel.Name = "CalibrasoiltempLabel";
             this.CalibrasoiltempLabel.Size = new System.Drawing.Size(39, 15);
             this.CalibrasoiltempLabel.TabIndex = 58;
@@ -549,7 +515,7 @@
             // CalibrahumidityLabel
             // 
             this.CalibrahumidityLabel.AutoSize = true;
-            this.CalibrahumidityLabel.Location = new System.Drawing.Point(124, 275);
+            this.CalibrahumidityLabel.Location = new System.Drawing.Point(104, 275);
             this.CalibrahumidityLabel.Name = "CalibrahumidityLabel";
             this.CalibrahumidityLabel.Size = new System.Drawing.Size(63, 15);
             this.CalibrahumidityLabel.TabIndex = 59;
@@ -579,7 +545,7 @@
             // ECALabel
             // 
             this.ECALabel.AutoSize = true;
-            this.ECALabel.Location = new System.Drawing.Point(104, 510);
+            this.ECALabel.Location = new System.Drawing.Point(109, 541);
             this.ECALabel.Name = "ECALabel";
             this.ECALabel.Size = new System.Drawing.Size(55, 15);
             this.ECALabel.TabIndex = 62;
@@ -589,7 +555,7 @@
             // ECBLabel
             // 
             this.ECBLabel.AutoSize = true;
-            this.ECBLabel.Location = new System.Drawing.Point(98, 578);
+            this.ECBLabel.Location = new System.Drawing.Point(109, 586);
             this.ECBLabel.Name = "ECBLabel";
             this.ECBLabel.Size = new System.Drawing.Size(55, 15);
             this.ECBLabel.TabIndex = 63;
@@ -599,7 +565,7 @@
             // ECCLabel
             // 
             this.ECCLabel.AutoSize = true;
-            this.ECCLabel.Location = new System.Drawing.Point(104, 651);
+            this.ECCLabel.Location = new System.Drawing.Point(109, 630);
             this.ECCLabel.Name = "ECCLabel";
             this.ECCLabel.Size = new System.Drawing.Size(55, 15);
             this.ECCLabel.TabIndex = 64;
@@ -609,18 +575,18 @@
             // CalibraTempLabel
             // 
             this.CalibraTempLabel.AutoSize = true;
-            this.CalibraTempLabel.Location = new System.Drawing.Point(104, 731);
+            this.CalibraTempLabel.Location = new System.Drawing.Point(109, 674);
             this.CalibraTempLabel.Name = "CalibraTempLabel";
-            this.CalibraTempLabel.Size = new System.Drawing.Size(55, 15);
+            this.CalibraTempLabel.Size = new System.Drawing.Size(39, 15);
             this.CalibraTempLabel.TabIndex = 67;
             this.CalibraTempLabel.TabStop = true;
-            this.CalibraTempLabel.Text = "00.000";
+            this.CalibraTempLabel.Text = "00.0";
             // 
             // label17
             // 
             this.label17.AutoSize = true;
             this.label17.Font = new System.Drawing.Font("宋体", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label17.Location = new System.Drawing.Point(8, 727);
+            this.label17.Location = new System.Drawing.Point(8, 670);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(104, 19);
             this.label17.TabIndex = 66;
@@ -630,7 +596,7 @@
             // 
             this.label12.AutoSize = true;
             this.label12.Font = new System.Drawing.Font("宋体", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label12.Location = new System.Drawing.Point(8, 766);
+            this.label12.Location = new System.Drawing.Point(8, 703);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(88, 19);
             this.label12.TabIndex = 68;
@@ -640,7 +606,7 @@
             // 
             this.label16.AutoSize = true;
             this.label16.Font = new System.Drawing.Font("宋体", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label16.Location = new System.Drawing.Point(6, 799);
+            this.label16.Location = new System.Drawing.Point(8, 735);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(88, 19);
             this.label16.TabIndex = 69;
@@ -650,7 +616,7 @@
             // 
             this.label18.AutoSize = true;
             this.label18.Font = new System.Drawing.Font("宋体", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label18.Location = new System.Drawing.Point(6, 832);
+            this.label18.Location = new System.Drawing.Point(8, 765);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(98, 19);
             this.label18.TabIndex = 70;
@@ -659,7 +625,7 @@
             // CalibraECALabel
             // 
             this.CalibraECALabel.AutoSize = true;
-            this.CalibraECALabel.Location = new System.Drawing.Point(102, 770);
+            this.CalibraECALabel.Location = new System.Drawing.Point(106, 707);
             this.CalibraECALabel.Name = "CalibraECALabel";
             this.CalibraECALabel.Size = new System.Drawing.Size(55, 15);
             this.CalibraECALabel.TabIndex = 71;
@@ -669,7 +635,7 @@
             // CalibraECBLabel
             // 
             this.CalibraECBLabel.AutoSize = true;
-            this.CalibraECBLabel.Location = new System.Drawing.Point(102, 803);
+            this.CalibraECBLabel.Location = new System.Drawing.Point(106, 739);
             this.CalibraECBLabel.Name = "CalibraECBLabel";
             this.CalibraECBLabel.Size = new System.Drawing.Size(55, 15);
             this.CalibraECBLabel.TabIndex = 72;
@@ -679,7 +645,7 @@
             // CalibraECCLabel
             // 
             this.CalibraECCLabel.AutoSize = true;
-            this.CalibraECCLabel.Location = new System.Drawing.Point(102, 836);
+            this.CalibraECCLabel.Location = new System.Drawing.Point(106, 769);
             this.CalibraECCLabel.Name = "CalibraECCLabel";
             this.CalibraECCLabel.Size = new System.Drawing.Size(55, 15);
             this.CalibraECCLabel.TabIndex = 73;
@@ -700,7 +666,7 @@
             // 
             this.label20.AutoSize = true;
             this.label20.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
-            this.label20.Location = new System.Drawing.Point(165, 239);
+            this.label20.Location = new System.Drawing.Point(160, 239);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(38, 15);
             this.label20.TabIndex = 75;
@@ -720,71 +686,71 @@
             // 
             this.label22.AutoSize = true;
             this.label22.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
-            this.label22.Location = new System.Drawing.Point(165, 510);
+            this.label22.Location = new System.Drawing.Point(170, 541);
             this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(47, 15);
+            this.label22.Size = new System.Drawing.Size(39, 15);
             this.label22.TabIndex = 77;
-            this.label22.Text = "ds/cm";
+            this.label22.Text = "ds/m";
             // 
             // label23
             // 
             this.label23.AutoSize = true;
             this.label23.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
-            this.label23.Location = new System.Drawing.Point(165, 578);
+            this.label23.Location = new System.Drawing.Point(170, 586);
             this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(47, 15);
+            this.label23.Size = new System.Drawing.Size(39, 15);
             this.label23.TabIndex = 78;
-            this.label23.Text = "ds/cm";
+            this.label23.Text = "ds/m";
             // 
             // label24
             // 
             this.label24.AutoSize = true;
             this.label24.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
-            this.label24.Location = new System.Drawing.Point(165, 651);
+            this.label24.Location = new System.Drawing.Point(170, 630);
             this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(47, 15);
+            this.label24.Size = new System.Drawing.Size(39, 15);
             this.label24.TabIndex = 79;
-            this.label24.Text = "ds/cm";
+            this.label24.Text = "ds/m";
             // 
             // label25
             // 
             this.label25.AutoSize = true;
             this.label25.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
-            this.label25.Location = new System.Drawing.Point(165, 731);
+            this.label25.Location = new System.Drawing.Point(170, 674);
             this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(47, 15);
+            this.label25.Size = new System.Drawing.Size(22, 15);
             this.label25.TabIndex = 80;
-            this.label25.Text = "ds/cm";
+            this.label25.Text = "℃";
             // 
             // label26
             // 
             this.label26.AutoSize = true;
             this.label26.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
-            this.label26.Location = new System.Drawing.Point(165, 770);
+            this.label26.Location = new System.Drawing.Point(170, 707);
             this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(47, 15);
+            this.label26.Size = new System.Drawing.Size(39, 15);
             this.label26.TabIndex = 81;
-            this.label26.Text = "ds/cm";
+            this.label26.Text = "ds/m";
             // 
             // label27
             // 
             this.label27.AutoSize = true;
             this.label27.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
-            this.label27.Location = new System.Drawing.Point(165, 803);
+            this.label27.Location = new System.Drawing.Point(170, 739);
             this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(47, 15);
+            this.label27.Size = new System.Drawing.Size(39, 15);
             this.label27.TabIndex = 82;
-            this.label27.Text = "ds/cm";
+            this.label27.Text = "ds/m";
             // 
             // label28
             // 
             this.label28.AutoSize = true;
             this.label28.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
-            this.label28.Location = new System.Drawing.Point(165, 836);
+            this.label28.Location = new System.Drawing.Point(170, 769);
             this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(47, 15);
+            this.label28.Size = new System.Drawing.Size(39, 15);
             this.label28.TabIndex = 83;
-            this.label28.Text = "ds/cm";
+            this.label28.Text = "ds/m";
             // 
             // label29
             // 
@@ -796,11 +762,44 @@
             this.label29.TabIndex = 84;
             this.label29.Text = "％ ";
             // 
+            // label30
+            // 
+            this.label30.AutoSize = true;
+            this.label30.Font = new System.Drawing.Font("宋体", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label30.Location = new System.Drawing.Point(8, 504);
+            this.label30.Name = "label30";
+            this.label30.Size = new System.Drawing.Size(123, 19);
+            this.label30.TabIndex = 85;
+            this.label30.Text = "土壤电导率：";
+            // 
+            // CurrentEcLabel
+            // 
+            this.CurrentEcLabel.AutoSize = true;
+            this.CurrentEcLabel.Location = new System.Drawing.Point(134, 508);
+            this.CurrentEcLabel.Name = "CurrentEcLabel";
+            this.CurrentEcLabel.Size = new System.Drawing.Size(55, 15);
+            this.CurrentEcLabel.TabIndex = 86;
+            this.CurrentEcLabel.TabStop = true;
+            this.CurrentEcLabel.Text = "00.000";
+            // 
+            // label31
+            // 
+            this.label31.AutoSize = true;
+            this.label31.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
+            this.label31.Location = new System.Drawing.Point(207, 508);
+            this.label31.Name = "label31";
+            this.label31.Size = new System.Drawing.Size(39, 15);
+            this.label31.TabIndex = 87;
+            this.label31.Text = "ds/m";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1066, 874);
+            this.ClientSize = new System.Drawing.Size(1066, 859);
+            this.Controls.Add(this.label31);
+            this.Controls.Add(this.CurrentEcLabel);
+            this.Controls.Add(this.label30);
             this.Controls.Add(this.label29);
             this.Controls.Add(this.label28);
             this.Controls.Add(this.label27);
@@ -846,16 +845,12 @@
             this.Controls.Add(this.OpenSerial);
             this.Controls.Add(this.SerialId);
             this.Controls.Add(this.label10);
-            this.Controls.Add(this.ECCClear);
-            this.Controls.Add(this.ECCCalibra);
             this.Controls.Add(this.textEC_C);
             this.Controls.Add(this.label9);
-            this.Controls.Add(this.ECBClear);
-            this.Controls.Add(this.ECBCalibra);
             this.Controls.Add(this.textEC_B);
             this.Controls.Add(this.label8);
-            this.Controls.Add(this.ECAClear);
-            this.Controls.Add(this.ECACalibra);
+            this.Controls.Add(this.ECClear);
+            this.Controls.Add(this.ECCalibra);
             this.Controls.Add(this.textEC_A);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
@@ -891,16 +886,12 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Button ECAClear;
-        private System.Windows.Forms.Button ECACalibra;
+        private System.Windows.Forms.Button ECClear;
+        private System.Windows.Forms.Button ECCalibra;
         private System.Windows.Forms.TextBox textEC_A;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Button ECBClear;
-        private System.Windows.Forms.Button ECBCalibra;
         private System.Windows.Forms.TextBox textEC_B;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Button ECCClear;
-        private System.Windows.Forms.Button ECCCalibra;
         private System.Windows.Forms.TextBox textEC_C;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
@@ -953,6 +944,9 @@
         private System.Windows.Forms.Label label27;
         private System.Windows.Forms.Label label28;
         private System.Windows.Forms.Label label29;
+        private System.Windows.Forms.Label label30;
+        private System.Windows.Forms.LinkLabel CurrentEcLabel;
+        private System.Windows.Forms.Label label31;
     }
 }
 

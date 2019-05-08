@@ -37,6 +37,96 @@ namespace Soil_Serial
             return ByteOut;
         }
 
+        /*
+         * Slove a, b, c in equation y=a*x^2+b*x+c
+         * y is standard EC
+         * x is EC before calibration
+         * Arguments    
+         *input			  double x1
+         *                double x2
+         *                double x3
+         *                double y1
+         *                double y2
+         *                double y3
+         * output
+         *                double *a
+         *                double *b
+         *                double *c
+         * Return Type  : void
+         */
+        public double[] Trixsolve(double x1, double x2, double x3, double y1, double y2, double y3)
+        {
+            //double xx[9];
+            //double yy[3];
+            double[] xx = new double[9];
+            double[] yy = new double[3];
+            double[] data = new double[3];
+            int r1;
+            int r2;
+            int r3;
+            double maxval;
+            double a21;
+            int rtemp;
+            xx[0] = x1 * x1;
+            xx[3] = x1;
+            xx[6] = 1.0;
+            xx[1] = x2 * x2;
+            xx[4] = x2;
+            xx[7] = 1.0;
+            xx[2] = x3 * x3;
+            xx[5] = x3;
+            xx[8] = 1.0;
+            yy[0] = y1;
+            yy[1] = y2;
+            yy[2] = y3;
+            r1 = 0;
+            r2 = 1;
+            r3 = 2;
+            maxval = System.Math.Abs(xx[0]);
+            a21 = System.Math.Abs(xx[1]);
+            if (a21 > maxval)
+            {
+                maxval = a21;
+                r1 = 1;
+                r2 = 0;
+            }
+
+            if (System.Math.Abs(xx[2]) > maxval)
+            {
+                r1 = 2;
+                r2 = 1;
+                r3 = 0;
+            }
+
+            xx[r2] /= xx[r1];
+            xx[r3] /= xx[r1];
+            xx[3 + r2] -= xx[r2] * xx[3 + r1];
+            xx[3 + r3] -= xx[r3] * xx[3 + r1];
+            xx[6 + r2] = 1.0 - xx[r2];
+            xx[6 + r3] -= xx[r3] * xx[6 + r1];
+            if (System.Math.Abs(xx[3 + r3]) > System.Math.Abs(xx[3 + r2]))
+            {
+                rtemp = r2;
+                r2 = r3;
+                r3 = rtemp;
+            }
+
+            xx[3 + r3] /= xx[3 + r2];
+            xx[6 + r3] -= xx[3 + r3] * xx[6 + r2];
+            //*b = yy[r2] - yy[r1] * xx[r2];
+            //*c = ((yy[r3] - yy[r1] * xx[r3]) - *b * xx[3 + r3]) / xx[6 + r3];
+            //*b -= *c * xx[6 + r2];
+            //*b /= xx[3 + r2];
+            //*a = ((yy[r1] - *c * xx[6 + r1]) - *b * xx[3 + r1]) / xx[r1];
+            data[1] = yy[r2] - yy[r1] * xx[r2];
+            data[2] = ((yy[r3] - yy[r1] * xx[r3]) - data[1] * xx[3 + r3]) / xx[6 + r3];
+            data[1] -= data[2] * xx[6 + r2];
+            data[1] /= xx[3 + r2];
+            data[0] = ((yy[r1] - data[2] * xx[6 + r1]) - data[1] * xx[3 + r1]) / xx[r1];
+            return data;
+        }
+
+
         /// <summary>
         /// RS485_CRC校验
         /// </summary>
