@@ -14,7 +14,7 @@ using System.Windows.Forms;
 
 namespace Soil_Serial
 {
-    public partial class Form1 : Form
+    public partial class NBI : Form
     {
         public SerialPort SerialDevice = new SerialPort();
         private TempHumidity TempHumiditys = new TempHumidity();
@@ -34,21 +34,17 @@ namespace Soil_Serial
         //使用多线程计时器
         private System.Timers.Timer timer = new System.Timers.Timer();
 
-        public Form1()
-        {
+        public NBI()
+        {         
             InitializeComponent();
             InitSerialConfig();
-            TempHumiditys.InitWidget(SerialDevice, SoilTempLabel, textSoilTemp, StempCalibra, StempClear, HumdataLabel,
-                                     textSoilHumid, SHumidCalibra, SHumidClear, SoilCheck, richTextBox1);
-            SensorECs.InitWidget(SerialDevice, ECTempLabel, textECTemp, ECtempCalibra, ECTempClear, ECALabel, textEC_A,
-                                 ECBLabel, textEC_B, ECCLabel, textEC_C, ECCalibra, ECClear, ECCheck, richTextBox1);
-         
+                    
             richTextBox1.Text = "鼠标左键双击，清除显示";            
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+          
         }
 
         /// <summary>
@@ -143,15 +139,6 @@ namespace Soil_Serial
                         SerialDevice.Open();
                         FirstSysTime = true;
 
-                        if (SetModebox.Text == "土壤温湿度")
-                        {
-                            SoilECMode = false;                       
-                        }
-                        else if (SetModebox.Text == "土壤电导率")
-                        {
-                            SoilECMode = true;                          
-                        }
-
                         timer.Start();
                         
                         if (CollectTime.Text == "采集时间(最好>5s)")
@@ -159,15 +146,18 @@ namespace Soil_Serial
                             CollectTime.Text = "5";                            
                         }
                         collectime = Convert.ToInt32(CollectTime.Text);
-
                         TempHumiditys.GetSoilTempHumidity();
+
+                        CollectTime.Enabled = false;
+                        SetModebox.Enabled = false;
+                        SerialId.Enabled = false;
                     }
                     catch (System.Exception)
                     {
                         //MessageBox.Show("Error:" + ex.Message, "Error");
                         MessageBox.Show("打开串口失败");
                         SerialId.Items.Clear();
-                        OpenSerial.Text = "打开串口";
+                        OpenSerial.Text = "打开串口";                      
                         return;
                     }
                 }
@@ -176,6 +166,9 @@ namespace Soil_Serial
             else
             {
                 OpenSerial.Text = "打开串口";
+                CollectTime.Enabled = true;
+                SetModebox.Enabled = true;
+                SerialId.Enabled = true;
                 SerialDevice.Close();
                 timer.Stop();
             }
@@ -280,15 +273,24 @@ namespace Soil_Serial
                                     CurrentEcLabel.Text = ((float)SoilEC / 1000).ToString();
                                     if ((float)(SoilEC / 1000.0) < 0.5)
                                     {
-                                        ECALabel.Text = ((float)SoilEC / 1000).ToString();
+                                        if (ECAbutton.Text == "锁定")
+                                        {
+                                            ECALabel.Text = ((float)SoilEC / 1000).ToString();
+                                        }
                                     }
                                     else if ((float)(SoilEC / 1000.0) > 1 && (float)(SoilEC / 1000.0) < 3)
                                     {
-                                        ECBLabel.Text = ((float)SoilEC / 1000).ToString();
+                                        if (ECBbutton.Text == "锁定")
+                                        {
+                                            ECBLabel.Text = ((float)SoilEC / 1000).ToString();
+                                        }                                           
                                     }
-                                    else if ((float)(SoilEC / 1000.0) > 9 && (float)(SoilEC / 1000.0) < 10)
+                                    else if ((float)(SoilEC / 1000.0) > 4 && (float)(SoilEC / 1000.0) < 8)
                                     {
-                                        ECCLabel.Text = ((float)SoilEC / 1000).ToString();
+                                        if (ECCbutton.Text == "锁定")
+                                        {
+                                            ECCLabel.Text = ((float)SoilEC / 1000).ToString();
+                                        }                                            
                                     }
                                 
                                     buffer = "土壤电导率: " + "温度: " + (float)(SoilTemp / 10.0) + "℃" + "   " + "EC: " + (float)(SoilEC / 1000.0) + "ds/m";
@@ -306,6 +308,9 @@ namespace Soil_Serial
                                             break;
                                         case 0x05:
                                             buffer = "土壤电导率三点标定完成";
+                                            ECAbutton.Text = "锁定";
+                                            ECBbutton.Text = "锁定";
+                                            ECCbutton.Text = "锁定";
                                             break;
 
                                         case 0x06:
@@ -370,6 +375,7 @@ namespace Soil_Serial
                                             break;
                                     }
                                 }
+                                richTextBox1.AppendText(Rs485s.ByteToString(ReceiveData));
                                 richTextBox1.AppendText(buffer + "\r\n");
                                 FileShare(buffer + "\r\n");
                             }
@@ -419,9 +425,11 @@ namespace Soil_Serial
                                                 CalibrasoiltempLabel.Text = ((float)datatemp / -10).ToString();
                                             }
                                             datatemp = ((ReceiveData[6] & 0xff) << 8 | ReceiveData[7] & 0xff);
+                                            
                                             if (datatemp <= 0x8000)
                                             {
                                                 CalibrahumidityLabel.Text = datatemp.ToString();
+
                                             }
                                             else
                                             {
@@ -560,17 +568,24 @@ namespace Soil_Serial
         {          
             if(!SoilECMode)
             {
-                if (textSoilTemp.Text.Trim() == String.Empty)
+                if (SerialDevice.IsOpen)
                 {
-                    MessageBox.Show("请输入土壤温度传感器温度标定数值");
-                }
+                    if (textSoilTemp.Text.Trim() == String.Empty)
+                    {
+                        MessageBox.Show("请输入土壤温度传感器温度标定数值");
+                    }
+                    else
+                    {
+                        timer.Stop();
+                        int data = Convert.ToInt16(Convert.ToDouble(textSoilTemp.Text) * 10);
+                        TempHumiditys.SetSoilTemp(data);
+                        Thread.Sleep(2000);
+                        timer.Start();
+                    }
+                }                  
                 else
                 {
-                    timer.Stop();
-                    int data = Convert.ToInt16(Convert.ToDouble(textSoilTemp.Text) * 10);
-                    TempHumiditys.SetSoilTemp(data);
-                    Thread.Sleep(2000);
-                    timer.Start();
+                    MessageBox.Show("请打开串口");
                 }
             }               
         }
@@ -584,8 +599,16 @@ namespace Soil_Serial
         {
             if (!SoilECMode)
             {
-                TempHumiditys.ClearSoilTemp();
-            }                
+                if (SerialDevice.IsOpen)
+                {
+                    TempHumiditys.ClearSoilTemp();
+                }
+                else
+                {
+                    MessageBox.Show("请打开串口");
+                }
+
+            }            
         }
 
         /// <summary>
@@ -597,11 +620,18 @@ namespace Soil_Serial
         {
             if (!SoilECMode)
             {
-                timer.Stop();
-                int data = Convert.ToInt16(Convert.ToDouble(textSoilHumid.Text));
-                TempHumiditys.SetSoilHumidity(data);
-                Thread.Sleep(2000);
-                timer.Start();
+                if (SerialDevice.IsOpen)
+                {
+                    timer.Stop();
+                    int data = Convert.ToInt16(Convert.ToDouble(textSoilHumid.Text));
+                    TempHumiditys.SetSoilHumidity(data);
+                    Thread.Sleep(2000);
+                    timer.Start();
+                }                    
+                else
+                {
+                    MessageBox.Show("请打开串口");
+                }
             }           
         }
 
@@ -614,10 +644,17 @@ namespace Soil_Serial
         {
             if (!SoilECMode)
             {
-                timer.Stop();
-                TempHumiditys.ClearSoilHumidity();
-                Thread.Sleep(2000);
-                timer.Start();
+                if (SerialDevice.IsOpen)
+                {
+                    timer.Stop();
+                    TempHumiditys.ClearSoilHumidity();
+                    Thread.Sleep(2000);
+                    timer.Start();
+                }                   
+                else
+                {
+                    MessageBox.Show("请打开串口");
+                }
             }           
         }
 
@@ -630,10 +667,17 @@ namespace Soil_Serial
         {
             if (!SoilECMode)
             {
-                timer.Stop();
-                TempHumiditys.CheckSoilTempHumidity();
-                Thread.Sleep(2000);
-                timer.Start();
+                if (SerialDevice.IsOpen)
+                {
+                    timer.Stop();
+                    TempHumiditys.CheckSoilTempHumidity();
+                    Thread.Sleep(2000);
+                    timer.Start();
+                }                  
+                else
+                {
+                    MessageBox.Show("请打开串口");
+                }
             }            
         }
 
@@ -646,17 +690,24 @@ namespace Soil_Serial
         {
             if (SoilECMode)
             {
-                if (textECTemp.Text.Trim() == String.Empty)
+                if (SerialDevice.IsOpen)
                 {
-                    MessageBox.Show("请输入土壤EC传感器温度标定数值");
-                }
+                    if (textECTemp.Text.Trim() == String.Empty)
+                    {
+                        MessageBox.Show("请输入土壤EC传感器温度标定数值");
+                    }
+                    else
+                    {
+                        timer.Stop();
+                        int data = Convert.ToInt16(Convert.ToDouble(textECTemp.Text) * 10);
+                        SensorECs.SetSoilTemp(data);
+                        Thread.Sleep(2000);
+                        timer.Start();
+                    }
+                }                  
                 else
                 {
-                    timer.Stop();
-                    int data = Convert.ToInt16(Convert.ToDouble(textECTemp.Text) * 10);
-                    SensorECs.SetSoilTemp(data);
-                    Thread.Sleep(2000);
-                    timer.Start();
+                    MessageBox.Show("请打开串口");
                 }
             }           
         }
@@ -670,10 +721,17 @@ namespace Soil_Serial
         {
             if (SoilECMode)
             {
-                timer.Stop();
-                SensorECs.ClearSoilTemp();
-                Thread.Sleep(2000);
-                timer.Start();
+                if (SerialDevice.IsOpen)
+                {
+                    timer.Stop();
+                    SensorECs.ClearSoilTemp();
+                    Thread.Sleep(2000);
+                    timer.Start();
+                }                    
+                else
+                {
+                    MessageBox.Show("请打开串口");
+                }
             }
         }
 
@@ -686,47 +744,54 @@ namespace Soil_Serial
         {
             if (SoilECMode)
             {
-                double[] data = new double[3];
-                int[] SensorData = new int[3];
-                if (textEC_A.Text.Trim() == String.Empty && textEC_B.Text.Trim() == String.Empty && textEC_C.Text.Trim() == String.Empty)
+                if (SerialDevice.IsOpen)
                 {
-                    MessageBox.Show("请输入土壤EC传感器三点标定数值");
-                }
-                else if (textEC_A.Text.Trim() == String.Empty && textEC_B.Text.Trim() != String.Empty && textEC_C.Text.Trim() != String.Empty)
-                {
-                    MessageBox.Show("请输入土壤EC传感器A点标定数值");
-                }
-                else if (textEC_A.Text.Trim() != String.Empty && textEC_B.Text.Trim() == String.Empty && textEC_C.Text.Trim() == String.Empty)
-                {
-                    MessageBox.Show("请输入土壤EC传感器B、C点标定数值");
-                }
-                else if (textEC_A.Text.Trim() == String.Empty && textEC_B.Text.Trim() != String.Empty && textEC_C.Text.Trim() == String.Empty)
-                {
-                    MessageBox.Show("请输入土壤EC传感器A、C点标定数值");
-                }
-                else if (textEC_A.Text.Trim() == String.Empty && textEC_B.Text.Trim() == String.Empty && textEC_C.Text.Trim() != String.Empty)
-                {
-                    MessageBox.Show("请输入土壤EC传感器A、B点标定数值");
-                }
-                else if (textEC_A.Text.Trim() != String.Empty && textEC_B.Text.Trim() == String.Empty && textEC_C.Text.Trim() != String.Empty)
-                {
-                    MessageBox.Show("请输入土壤EC传感器B点标定数值");
-                }
-                else if (textEC_A.Text.Trim() != String.Empty && textEC_B.Text.Trim() != String.Empty && textEC_C.Text.Trim() == String.Empty)
-                {
-                    MessageBox.Show("请输入土壤EC传感器C点标定数值");
-                }
+                    double[] data = new double[3];
+                    int[] SensorData = new int[3];
+                    if (textEC_A.Text.Trim() == String.Empty && textEC_B.Text.Trim() == String.Empty && textEC_C.Text.Trim() == String.Empty)
+                    {
+                        MessageBox.Show("请输入土壤EC传感器三点标定数值");
+                    }
+                    else if (textEC_A.Text.Trim() == String.Empty && textEC_B.Text.Trim() != String.Empty && textEC_C.Text.Trim() != String.Empty)
+                    {
+                        MessageBox.Show("请输入土壤EC传感器A点标定数值");
+                    }
+                    else if (textEC_A.Text.Trim() != String.Empty && textEC_B.Text.Trim() == String.Empty && textEC_C.Text.Trim() == String.Empty)
+                    {
+                        MessageBox.Show("请输入土壤EC传感器B、C点标定数值");
+                    }
+                    else if (textEC_A.Text.Trim() == String.Empty && textEC_B.Text.Trim() != String.Empty && textEC_C.Text.Trim() == String.Empty)
+                    {
+                        MessageBox.Show("请输入土壤EC传感器A、C点标定数值");
+                    }
+                    else if (textEC_A.Text.Trim() == String.Empty && textEC_B.Text.Trim() == String.Empty && textEC_C.Text.Trim() != String.Empty)
+                    {
+                        MessageBox.Show("请输入土壤EC传感器A、B点标定数值");
+                    }
+                    else if (textEC_A.Text.Trim() != String.Empty && textEC_B.Text.Trim() == String.Empty && textEC_C.Text.Trim() != String.Empty)
+                    {
+                        MessageBox.Show("请输入土壤EC传感器B点标定数值");
+                    }
+                    else if (textEC_A.Text.Trim() != String.Empty && textEC_B.Text.Trim() != String.Empty && textEC_C.Text.Trim() == String.Empty)
+                    {
+                        MessageBox.Show("请输入土壤EC传感器C点标定数值");
+                    }
+                    else
+                    {
+                        timer.Stop();
+                        richTextBox1.AppendText(textECTemp.Text);
+                        data[0] = Convert.ToDouble(textEC_A.Text);
+                        data[1] = Convert.ToDouble(textEC_B.Text);
+                        data[2] = Convert.ToDouble(textEC_C.Text);
+                        SensorData = SensorECs.SetSoilEC(data);
+                        FileShare("电导率标定参数：EC_A" + data[0] + "  " + "EC_B" + data[1] + "  " + "EC_C" + data[2]);
+                        Thread.Sleep(2000);
+                        timer.Start();
+                    }
+                }                    
                 else
                 {
-                    timer.Stop();
-                    richTextBox1.AppendText(textECTemp.Text);
-                    data[0] = Convert.ToDouble(textEC_A.Text);
-                    data[1] = Convert.ToDouble(textEC_B.Text);
-                    data[2] = Convert.ToDouble(textEC_C.Text);
-                    SensorData = SensorECs.SetSoilEC(data);
-                    FileShare("电导率标定参数：EC_A" + data[0] + "  " +"EC_B" + data[1] + "  " + "EC_C" + data[2]);
-                    Thread.Sleep(2000);
-                    timer.Start();
+                    MessageBox.Show("请打开串口");
                 }
             }            
         }
@@ -740,22 +805,141 @@ namespace Soil_Serial
         {
             if (SoilECMode)
             {
-                timer.Stop();
-                SensorECs.ClearSoilEC();
-                Thread.Sleep(2000);
-                timer.Start();
+                if (SerialDevice.IsOpen)
+                {
+                    timer.Stop();
+                    SensorECs.ClearSoilEC();
+                    Thread.Sleep(2000);
+                    timer.Start();
+                }                    
+                else
+                {
+                    MessageBox.Show("请打开串口");
+                }
             }              
         }
 
+        /// <summary>
+        /// 查询土壤电导率标定数据
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ECCheck_Click(object sender, EventArgs e)
         {
             if (SoilECMode)
             {
-                timer.Stop();
-                SensorECs.CheckSoilEC();
-                Thread.Sleep(2000);
-                timer.Start();
+                if (SerialDevice.IsOpen)
+                {
+                    timer.Stop();
+                    SensorECs.CheckSoilEC();
+                    Thread.Sleep(2000);
+                    timer.Start();
+                }                    
+                else
+                {
+                    MessageBox.Show("请打开串口");
+                }
             }   
+        }
+
+        /// <summary>
+        /// 选择工作模式
+        /// </summary> 
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SetModebox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            TempHumiditys.InitWidget(SerialDevice, SoilTempLabel, textSoilTemp, StempCalibra, StempClear, HumdataLabel, HumidityLabel,
+                                    textSoilHumid, SHumidCalibra, SHumidClear, CalibrasoiltempLabel, CalibrahumidityLabel,SoilCheck, richTextBox1);
+
+            SensorECs.InitWidget(SerialDevice, ECTempLabel, textECTemp, ECtempCalibra, ECTempClear, CurrentEcLabel, ECALabel, textEC_A,
+                                 ECBLabel, textEC_B, ECCLabel, textEC_C, ECCalibra, ECClear, ECCheck, CalibraTempLabel, CalibraECALabel,
+                                 CalibraECBLabel, CalibraECCLabel, ECAbutton, ECBbutton, ECCbutton, richTextBox1);
+
+            if (SetModebox.Text == "土壤温湿度")
+            {
+                SoilECMode = false;
+                SensorECs.DisableControlProper();
+                TempHumiditys.EnableControlProper();
+            }
+            else if (SetModebox.Text == "土壤电导率")
+            {
+                SoilECMode = true;
+                SensorECs.EnableControlProper();
+                TempHumiditys.DisableControlProper();
+            }
+        }
+
+        /// <summary>
+        /// 固定电导率A点标定数据
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ECAbutton_Click(object sender, EventArgs e)
+        {
+            if (SerialDevice.IsOpen)
+            {
+                if (ECAbutton.Text == "锁定")
+                {
+                    ECAbutton.Text = "更新";
+                }
+                else
+                {
+                    ECAbutton.Text = "锁定";
+                }
+            }
+            else
+            {
+                MessageBox.Show("请打开串口");
+            }
+        }
+
+        /// <summary>
+        /// 固定电导率B点标定数据
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ECBbutton_Click(object sender, EventArgs e)
+        {
+            if (SerialDevice.IsOpen)
+            {
+                if (ECBbutton.Text == "锁定")
+                {
+                    ECBbutton.Text = "更新";
+                }
+                else
+                {
+                    ECBbutton.Text = "锁定";
+                }
+            }
+            else
+            {
+                MessageBox.Show("请打开串口");
+            }
+        }
+
+        /// <summary>
+        /// 固定电导率C点标定数据
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ECCbutton_Click(object sender, EventArgs e)
+        {
+            if (SerialDevice.IsOpen)
+            {
+                if (ECCbutton.Text == "锁定")
+                {
+                    ECCbutton.Text = "更新";
+                }
+                else
+                {
+                    ECCbutton.Text = "锁定";
+                }
+            }
+            else
+            {
+                MessageBox.Show("请打开串口");
+            }
         }
     }
 }

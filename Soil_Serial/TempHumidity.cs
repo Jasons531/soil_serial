@@ -24,15 +24,19 @@ namespace Soil_Serial
         /// 湿度
         /// </summary>
         private LinkLabel _HumdataLabel;
+        private LinkLabel _HumidityLabel;
         private TextBox   _textSoilHumid;
         private Button    _SHumidCalibra;
         private Button    _SHumidClear;
+        private LinkLabel _CalibrasoiltempLabel;
+        private LinkLabel _CalibrahumidityLabel;
         private Button    _SoilCheck;
 
         private RichTextBox _RichTextBox1;
 
-        public void InitWidget(SerialPort SerialDevice, LinkLabel SoilTempLabel, TextBox textSoilTemp,  Button StempCalibra,  Button StempClear, LinkLabel HumdataLabel,
-                                TextBox textSoilHumid, Button SHumidCalibra, Button SHumidClear, Button SoilCheck, RichTextBox RichTextBox1)
+        public void InitWidget(SerialPort SerialDevice, LinkLabel SoilTempLabel, TextBox textSoilTemp,  Button StempCalibra,  Button StempClear,
+                                LinkLabel HumdataLabel, LinkLabel HumidityLabel, TextBox textSoilHumid, Button SHumidCalibra, Button SHumidClear,
+                                LinkLabel CalibrasoiltempLabel, LinkLabel CalibrahumidityLabel,Button SoilCheck, RichTextBox RichTextBox1)
         {
             _SerialDevice = SerialDevice;
             ///温度控件
@@ -43,14 +47,60 @@ namespace Soil_Serial
 
             ///湿度控件
             _HumdataLabel = HumdataLabel;
+            _HumidityLabel = HumidityLabel;
             _textSoilHumid = textSoilHumid;
             _SHumidCalibra = SHumidCalibra;
             _SHumidClear = SHumidClear;
+
+            _CalibrasoiltempLabel = CalibrasoiltempLabel;
+            _CalibrahumidityLabel = CalibrahumidityLabel;
 
             ///标定查询
             _SoilCheck = SoilCheck;
 
             _RichTextBox1 = RichTextBox1;
+        }
+
+        public void EnableControlProper()
+        {
+            _SoilTempLabel.Enabled = true;
+            _textSoilTemp.Enabled = true;
+            _StempCalibra.Enabled = true;
+            _StempClear.Enabled = true;
+            _HumidityLabel.Enabled = true;
+
+            ///湿度控件
+            _HumdataLabel.Enabled = true;
+            _textSoilHumid.Enabled = true;
+            _SHumidCalibra.Enabled = true;
+            _SHumidClear.Enabled = true;
+
+            _CalibrasoiltempLabel.Enabled = true;
+            _CalibrahumidityLabel.Enabled = true;
+
+            ///标定查询
+            _SoilCheck.Enabled = true;
+        }
+
+        public void DisableControlProper()
+        {
+            _SoilTempLabel.Enabled = false;
+            _textSoilTemp.Enabled = false;
+            _StempCalibra.Enabled = false;
+            _StempClear.Enabled = false;
+
+            _HumidityLabel.Enabled = false;
+
+            ///湿度控件
+            _HumdataLabel.Enabled = false;
+            _textSoilHumid.Enabled = false;
+            _SHumidCalibra.Enabled = false;
+            _SHumidClear.Enabled = false;
+
+            _CalibrasoiltempLabel.Enabled = false;
+            _CalibrahumidityLabel.Enabled = false;
+            ///标定查询
+            _SoilCheck.Enabled = false;
         }
 
         /// <summary>
@@ -60,7 +110,7 @@ namespace Soil_Serial
         {
             Byte[] SendCmds = new Byte[8] { 0xf9, 0x03, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00 };
             Rs485s.GetCrc(SendCmds, 6);
-            _SerialDevice.Write(SendCmds, 0, 8);    
+            _SerialDevice.Write(SendCmds, 0, 8);
             //_RichTextBox1.AppendText(Rs485s.ByteToString(SendCmds));
         }
 
@@ -73,22 +123,22 @@ namespace Soil_Serial
         {
             Byte[] SendCmds = new Byte[8] { 0xf9, 0x07, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00 };
             int Seq = 0;
-            int DataTemp = Convert.ToInt16(Convert.ToDouble(_SoilTempLabel.Text)*10);
-         
+            int DataTemp = Convert.ToInt16(Convert.ToDouble(_SoilTempLabel.Text) * 10);
+
             ///加
             if (Data > DataTemp)
             {
                 Seq = Data - DataTemp;
                 SendCmds[3] = 0x01;
                 SendCmds[4] = (byte)((Seq & 0xff00) >> 8);
-                SendCmds[5] = (byte)((Seq & 0x00ff) >> 0);                
+                SendCmds[5] = (byte)((Seq & 0x00ff) >> 0);
             }
             else if (Data < DataTemp)
             {
                 Seq = DataTemp - Data;
                 SendCmds[3] = 0x02;
                 SendCmds[4] = (byte)((Seq & 0xff00) >> 8);
-                SendCmds[5] = (byte)((Seq & 0x00ff) >> 0);              
+                SendCmds[5] = (byte)((Seq & 0x00ff) >> 0);
             }
             Rs485s.GetCrc(SendCmds, 6);
             _SerialDevice.Write(SendCmds, 0, 8);
@@ -121,14 +171,14 @@ namespace Soil_Serial
                 Seq = Data - Convert.ToInt16(Convert.ToDouble(_HumdataLabel.Text));
                 SendCmds[3] = 0x05;
                 SendCmds[4] = (byte)((Seq & 0xff00) >> 8);
-                SendCmds[5] = (byte)((Seq & 0x00ff) >> 0);                
+                SendCmds[5] = (byte)((Seq & 0x00ff) >> 0);
             }
             else if (Data < Convert.ToInt16(Convert.ToDouble(_HumdataLabel.Text)))
             {
                 Seq = Convert.ToInt16(Convert.ToDouble(_HumdataLabel.Text)) - Data;
                 SendCmds[3] = 0x06;
                 SendCmds[4] = (byte)((Seq & 0xff00) >> 8);
-                SendCmds[5] = (byte)((Seq & 0x00ff) >> 0);                         
+                SendCmds[5] = (byte)((Seq & 0x00ff) >> 0);
             }
             Rs485s.GetCrc(SendCmds, 6);
             _SerialDevice.Write(SendCmds, 0, 8);
@@ -150,10 +200,10 @@ namespace Soil_Serial
         /// 查询土壤温湿度补偿数据
         /// </summary>
         public void CheckSoilTempHumidity()
-        {
+        {            
             Byte[] SendCmds = new Byte[8] { 0xf9, 0x07, 0x03, 0x08, 0x00, 0x00, 0x00, 0x00 };
             Rs485s.GetCrc(SendCmds, 6);
-            _SerialDevice.Write(SendCmds, 0, 8);
+            _SerialDevice.Write(SendCmds, 0, 8);                      
         }
     }
 }

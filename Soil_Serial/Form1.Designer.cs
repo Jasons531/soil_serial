@@ -1,6 +1,6 @@
 ﻿namespace Soil_Serial
 {
-    partial class Form1
+    partial class NBI
     {
         /// <summary>
         /// 必需的设计器变量。
@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NBI));
             this.label1 = new System.Windows.Forms.Label();
             this.StempCalibra = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
@@ -73,7 +74,6 @@
             this.HumdataLabel = new System.Windows.Forms.LinkLabel();
             this.label11 = new System.Windows.Forms.Label();
             this.CalibrasoiltempLabel = new System.Windows.Forms.LinkLabel();
-            this.CalibrahumidityLabel = new System.Windows.Forms.LinkLabel();
             this.label15 = new System.Windows.Forms.Label();
             this.ECTempLabel = new System.Windows.Forms.LinkLabel();
             this.ECALabel = new System.Windows.Forms.LinkLabel();
@@ -101,6 +101,10 @@
             this.label30 = new System.Windows.Forms.Label();
             this.CurrentEcLabel = new System.Windows.Forms.LinkLabel();
             this.label31 = new System.Windows.Forms.Label();
+            this.ECAbutton = new System.Windows.Forms.Button();
+            this.ECBbutton = new System.Windows.Forms.Button();
+            this.ECCbutton = new System.Windows.Forms.Button();
+            this.CalibrahumidityLabel = new System.Windows.Forms.LinkLabel();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -116,12 +120,13 @@
             // 
             // StempCalibra
             // 
+            this.StempCalibra.BackColor = System.Drawing.Color.DarkOrange;
             this.StempCalibra.Location = new System.Drawing.Point(210, 104);
             this.StempCalibra.Name = "StempCalibra";
             this.StempCalibra.Size = new System.Drawing.Size(77, 34);
             this.StempCalibra.TabIndex = 3;
             this.StempCalibra.Text = "标定";
-            this.StempCalibra.UseVisualStyleBackColor = true;
+            this.StempCalibra.UseVisualStyleBackColor = false;
             this.StempCalibra.Click += new System.EventHandler(this.StempCalibra_Click);
             // 
             // label2
@@ -144,12 +149,13 @@
             // 
             // SHumidCalibra
             // 
+            this.SHumidCalibra.BackColor = System.Drawing.Color.DarkOrange;
             this.SHumidCalibra.Location = new System.Drawing.Point(210, 187);
             this.SHumidCalibra.Name = "SHumidCalibra";
             this.SHumidCalibra.Size = new System.Drawing.Size(77, 31);
             this.SHumidCalibra.TabIndex = 7;
             this.SHumidCalibra.Text = "标定";
-            this.SHumidCalibra.UseVisualStyleBackColor = true;
+            this.SHumidCalibra.UseVisualStyleBackColor = false;
             this.SHumidCalibra.Click += new System.EventHandler(this.SHumidCalibra_Click);
             // 
             // label3
@@ -171,12 +177,13 @@
             // 
             // ECtempCalibra
             // 
+            this.ECtempCalibra.BackColor = System.Drawing.Color.DarkOrange;
             this.ECtempCalibra.Location = new System.Drawing.Point(210, 400);
             this.ECtempCalibra.Name = "ECtempCalibra";
             this.ECtempCalibra.Size = new System.Drawing.Size(74, 34);
             this.ECtempCalibra.TabIndex = 10;
             this.ECtempCalibra.Text = "标定";
-            this.ECtempCalibra.UseVisualStyleBackColor = true;
+            this.ECtempCalibra.UseVisualStyleBackColor = false;
             this.ECtempCalibra.Click += new System.EventHandler(this.ECtempCalibra_Click);
             // 
             // label4
@@ -211,27 +218,29 @@
             // 
             // ECClear
             // 
-            this.ECClear.Location = new System.Drawing.Point(328, 596);
+            this.ECClear.BackColor = System.Drawing.Color.DarkOrange;
+            this.ECClear.Location = new System.Drawing.Point(431, 598);
             this.ECClear.Name = "ECClear";
             this.ECClear.Size = new System.Drawing.Size(78, 49);
             this.ECClear.TabIndex = 18;
             this.ECClear.Text = "清零";
-            this.ECClear.UseVisualStyleBackColor = true;
+            this.ECClear.UseVisualStyleBackColor = false;
             this.ECClear.Click += new System.EventHandler(this.ECClear_Click);
             // 
             // ECCalibra
             // 
-            this.ECCalibra.Location = new System.Drawing.Point(328, 531);
+            this.ECCalibra.BackColor = System.Drawing.Color.DarkOrange;
+            this.ECCalibra.Location = new System.Drawing.Point(431, 538);
             this.ECCalibra.Name = "ECCalibra";
             this.ECCalibra.Size = new System.Drawing.Size(78, 47);
             this.ECCalibra.TabIndex = 17;
             this.ECCalibra.Text = "标定";
-            this.ECCalibra.UseVisualStyleBackColor = true;
+            this.ECCalibra.UseVisualStyleBackColor = false;
             this.ECCalibra.Click += new System.EventHandler(this.ECCalibra_Click);
             // 
             // textEC_A
             // 
-            this.textEC_A.Location = new System.Drawing.Point(227, 531);
+            this.textEC_A.Location = new System.Drawing.Point(317, 538);
             this.textEC_A.Name = "textEC_A";
             this.textEC_A.Size = new System.Drawing.Size(86, 25);
             this.textEC_A.TabIndex = 16;
@@ -248,7 +257,7 @@
             // 
             // textEC_B
             // 
-            this.textEC_B.Location = new System.Drawing.Point(227, 576);
+            this.textEC_B.Location = new System.Drawing.Point(317, 576);
             this.textEC_B.Name = "textEC_B";
             this.textEC_B.Size = new System.Drawing.Size(86, 25);
             this.textEC_B.TabIndex = 20;
@@ -265,7 +274,7 @@
             // 
             // textEC_C
             // 
-            this.textEC_C.Location = new System.Drawing.Point(227, 620);
+            this.textEC_C.Location = new System.Drawing.Point(317, 622);
             this.textEC_C.Name = "textEC_C";
             this.textEC_C.Size = new System.Drawing.Size(86, 25);
             this.textEC_C.TabIndex = 24;
@@ -276,15 +285,15 @@
             this.label9.Font = new System.Drawing.Font("宋体", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label9.Location = new System.Drawing.Point(5, 628);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(98, 19);
+            this.label9.Size = new System.Drawing.Size(88, 19);
             this.label9.TabIndex = 23;
-            this.label9.Text = "9<EC<10：";
+            this.label9.Text = "4<EC<8：";
             // 
             // label10
             // 
             this.label10.AutoSize = true;
             this.label10.Font = new System.Drawing.Font("宋体", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label10.Location = new System.Drawing.Point(393, 73);
+            this.label10.Location = new System.Drawing.Point(475, 74);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(66, 19);
             this.label10.TabIndex = 27;
@@ -293,7 +302,7 @@
             // SerialId
             // 
             this.SerialId.FormattingEnabled = true;
-            this.SerialId.Location = new System.Drawing.Point(457, 73);
+            this.SerialId.Location = new System.Drawing.Point(539, 74);
             this.SerialId.Name = "SerialId";
             this.SerialId.Size = new System.Drawing.Size(99, 23);
             this.SerialId.TabIndex = 28;
@@ -301,18 +310,19 @@
             // 
             // OpenSerial
             // 
+            this.OpenSerial.BackColor = System.Drawing.Color.DarkOrange;
             this.OpenSerial.Font = new System.Drawing.Font("宋体", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.OpenSerial.Location = new System.Drawing.Point(949, 66);
+            this.OpenSerial.Location = new System.Drawing.Point(1031, 67);
             this.OpenSerial.Name = "OpenSerial";
             this.OpenSerial.Size = new System.Drawing.Size(105, 29);
             this.OpenSerial.TabIndex = 29;
             this.OpenSerial.Text = "打开串口";
-            this.OpenSerial.UseVisualStyleBackColor = true;
+            this.OpenSerial.UseVisualStyleBackColor = false;
             this.OpenSerial.Click += new System.EventHandler(this.OpenSerial_Click);
             // 
             // CollectTime
             // 
-            this.CollectTime.Location = new System.Drawing.Point(777, 71);
+            this.CollectTime.Location = new System.Drawing.Point(859, 72);
             this.CollectTime.Name = "CollectTime";
             this.CollectTime.Size = new System.Drawing.Size(149, 25);
             this.CollectTime.TabIndex = 30;
@@ -321,59 +331,64 @@
             // 
             // StempClear
             // 
+            this.StempClear.BackColor = System.Drawing.Color.DarkOrange;
             this.StempClear.Location = new System.Drawing.Point(303, 104);
             this.StempClear.Name = "StempClear";
             this.StempClear.Size = new System.Drawing.Size(72, 34);
             this.StempClear.TabIndex = 31;
             this.StempClear.Text = "清零";
-            this.StempClear.UseVisualStyleBackColor = true;
+            this.StempClear.UseVisualStyleBackColor = false;
             this.StempClear.Click += new System.EventHandler(this.StempClear_Click);
             // 
             // SHumidClear
             // 
+            this.SHumidClear.BackColor = System.Drawing.Color.DarkOrange;
             this.SHumidClear.Location = new System.Drawing.Point(303, 184);
             this.SHumidClear.Name = "SHumidClear";
             this.SHumidClear.Size = new System.Drawing.Size(72, 34);
             this.SHumidClear.TabIndex = 33;
             this.SHumidClear.Text = "清零";
-            this.SHumidClear.UseVisualStyleBackColor = true;
+            this.SHumidClear.UseVisualStyleBackColor = false;
             this.SHumidClear.Click += new System.EventHandler(this.SHumidClear_Click);
             // 
             // SoilCheck
             // 
+            this.SoilCheck.BackColor = System.Drawing.Color.DarkOrange;
             this.SoilCheck.Location = new System.Drawing.Point(210, 256);
             this.SoilCheck.Name = "SoilCheck";
             this.SoilCheck.Size = new System.Drawing.Size(72, 34);
             this.SoilCheck.TabIndex = 32;
             this.SoilCheck.Text = "查询";
-            this.SoilCheck.UseVisualStyleBackColor = true;
+            this.SoilCheck.UseVisualStyleBackColor = false;
             this.SoilCheck.Click += new System.EventHandler(this.SoilCheck_Click);
             // 
             // ECTempClear
             // 
+            this.ECTempClear.BackColor = System.Drawing.Color.DarkOrange;
             this.ECTempClear.Location = new System.Drawing.Point(303, 400);
             this.ECTempClear.Name = "ECTempClear";
             this.ECTempClear.Size = new System.Drawing.Size(69, 34);
             this.ECTempClear.TabIndex = 35;
             this.ECTempClear.Text = "清零";
-            this.ECTempClear.UseVisualStyleBackColor = true;
+            this.ECTempClear.UseVisualStyleBackColor = false;
             this.ECTempClear.Click += new System.EventHandler(this.ECTempClear_Click);
             // 
             // ECCheck
             // 
+            this.ECCheck.BackColor = System.Drawing.Color.DarkOrange;
             this.ECCheck.Location = new System.Drawing.Point(234, 720);
             this.ECCheck.Name = "ECCheck";
             this.ECCheck.Size = new System.Drawing.Size(86, 48);
             this.ECCheck.TabIndex = 34;
             this.ECCheck.Text = "补偿查询";
-            this.ECCheck.UseVisualStyleBackColor = true;
+            this.ECCheck.UseVisualStyleBackColor = false;
             this.ECCheck.Click += new System.EventHandler(this.ECCheck_Click);
             // 
             // richTextBox1
             // 
             this.richTextBox1.ContextMenuStrip = this.contextMenuStrip1;
             this.richTextBox1.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.richTextBox1.Location = new System.Drawing.Point(457, 113);
+            this.richTextBox1.Location = new System.Drawing.Point(539, 114);
             this.richTextBox1.Name = "richTextBox1";
             this.richTextBox1.Size = new System.Drawing.Size(597, 679);
             this.richTextBox1.TabIndex = 38;
@@ -423,16 +438,17 @@
             // SetModebox
             // 
             this.SetModebox.FormattingEnabled = true;
-            this.SetModebox.Location = new System.Drawing.Point(634, 72);
+            this.SetModebox.Location = new System.Drawing.Point(716, 73);
             this.SetModebox.Name = "SetModebox";
             this.SetModebox.Size = new System.Drawing.Size(121, 23);
             this.SetModebox.TabIndex = 45;
+            this.SetModebox.SelectedIndexChanged += new System.EventHandler(this.SetModebox_SelectedIndexChanged);
             // 
             // label13
             // 
             this.label13.AutoSize = true;
             this.label13.Font = new System.Drawing.Font("宋体", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label13.Location = new System.Drawing.Point(562, 74);
+            this.label13.Location = new System.Drawing.Point(644, 75);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(66, 19);
             this.label13.TabIndex = 46;
@@ -467,10 +483,10 @@
             this.SoilTempLabel.AutoSize = true;
             this.SoilTempLabel.Location = new System.Drawing.Point(109, 81);
             this.SoilTempLabel.Name = "SoilTempLabel";
-            this.SoilTempLabel.Size = new System.Drawing.Size(39, 15);
+            this.SoilTempLabel.Size = new System.Drawing.Size(55, 15);
             this.SoilTempLabel.TabIndex = 54;
             this.SoilTempLabel.TabStop = true;
-            this.SoilTempLabel.Text = "00.0";
+            this.SoilTempLabel.Text = "00.0  ";
             // 
             // HumidityLabel
             // 
@@ -507,20 +523,10 @@
             this.CalibrasoiltempLabel.AutoSize = true;
             this.CalibrasoiltempLabel.Location = new System.Drawing.Point(109, 237);
             this.CalibrasoiltempLabel.Name = "CalibrasoiltempLabel";
-            this.CalibrasoiltempLabel.Size = new System.Drawing.Size(39, 15);
+            this.CalibrasoiltempLabel.Size = new System.Drawing.Size(55, 15);
             this.CalibrasoiltempLabel.TabIndex = 58;
             this.CalibrasoiltempLabel.TabStop = true;
-            this.CalibrasoiltempLabel.Text = "00.0";
-            // 
-            // CalibrahumidityLabel
-            // 
-            this.CalibrahumidityLabel.AutoSize = true;
-            this.CalibrahumidityLabel.Location = new System.Drawing.Point(104, 275);
-            this.CalibrahumidityLabel.Name = "CalibrahumidityLabel";
-            this.CalibrahumidityLabel.Size = new System.Drawing.Size(63, 15);
-            this.CalibrahumidityLabel.TabIndex = 59;
-            this.CalibrahumidityLabel.TabStop = true;
-            this.CalibrahumidityLabel.Text = "  000  ";
+            this.CalibrasoiltempLabel.Text = "00.0  ";
             // 
             // label15
             // 
@@ -577,10 +583,10 @@
             this.CalibraTempLabel.AutoSize = true;
             this.CalibraTempLabel.Location = new System.Drawing.Point(109, 674);
             this.CalibraTempLabel.Name = "CalibraTempLabel";
-            this.CalibraTempLabel.Size = new System.Drawing.Size(39, 15);
+            this.CalibraTempLabel.Size = new System.Drawing.Size(55, 15);
             this.CalibraTempLabel.TabIndex = 67;
             this.CalibraTempLabel.TabStop = true;
-            this.CalibraTempLabel.Text = "00.0";
+            this.CalibraTempLabel.Text = "00.0  ";
             // 
             // label17
             // 
@@ -618,9 +624,9 @@
             this.label18.Font = new System.Drawing.Font("宋体", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label18.Location = new System.Drawing.Point(8, 765);
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(98, 19);
+            this.label18.Size = new System.Drawing.Size(88, 19);
             this.label18.TabIndex = 70;
-            this.label18.Text = "9<EC<10：";
+            this.label18.Text = "4<EC<8：";
             // 
             // CalibraECALabel
             // 
@@ -792,11 +798,59 @@
             this.label31.TabIndex = 87;
             this.label31.Text = "ds/m";
             // 
-            // Form1
+            // ECAbutton
+            // 
+            this.ECAbutton.BackColor = System.Drawing.Color.DarkOrange;
+            this.ECAbutton.Location = new System.Drawing.Point(227, 531);
+            this.ECAbutton.Name = "ECAbutton";
+            this.ECAbutton.Size = new System.Drawing.Size(75, 34);
+            this.ECAbutton.TabIndex = 88;
+            this.ECAbutton.Text = "锁定";
+            this.ECAbutton.UseVisualStyleBackColor = false;
+            this.ECAbutton.Click += new System.EventHandler(this.ECAbutton_Click);
+            // 
+            // ECBbutton
+            // 
+            this.ECBbutton.BackColor = System.Drawing.Color.DarkOrange;
+            this.ECBbutton.Location = new System.Drawing.Point(227, 576);
+            this.ECBbutton.Name = "ECBbutton";
+            this.ECBbutton.Size = new System.Drawing.Size(75, 34);
+            this.ECBbutton.TabIndex = 89;
+            this.ECBbutton.Text = "锁定";
+            this.ECBbutton.UseVisualStyleBackColor = false;
+            this.ECBbutton.Click += new System.EventHandler(this.ECBbutton_Click);
+            // 
+            // ECCbutton
+            // 
+            this.ECCbutton.BackColor = System.Drawing.Color.DarkOrange;
+            this.ECCbutton.Location = new System.Drawing.Point(227, 620);
+            this.ECCbutton.Name = "ECCbutton";
+            this.ECCbutton.Size = new System.Drawing.Size(75, 34);
+            this.ECCbutton.TabIndex = 90;
+            this.ECCbutton.Text = "锁定";
+            this.ECCbutton.UseVisualStyleBackColor = false;
+            this.ECCbutton.Click += new System.EventHandler(this.ECCbutton_Click);
+            // 
+            // CalibrahumidityLabel
+            // 
+            this.CalibrahumidityLabel.AutoSize = true;
+            this.CalibrahumidityLabel.Location = new System.Drawing.Point(109, 275);
+            this.CalibrahumidityLabel.Name = "CalibrahumidityLabel";
+            this.CalibrahumidityLabel.Size = new System.Drawing.Size(63, 15);
+            this.CalibrahumidityLabel.TabIndex = 91;
+            this.CalibrahumidityLabel.TabStop = true;
+            this.CalibrahumidityLabel.Text = "  000  ";
+            // 
+            // NBI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1066, 859);
+            this.BackColor = System.Drawing.Color.Moccasin;
+            this.ClientSize = new System.Drawing.Size(1153, 859);
+            this.Controls.Add(this.CalibrahumidityLabel);
+            this.Controls.Add(this.ECCbutton);
+            this.Controls.Add(this.ECBbutton);
+            this.Controls.Add(this.ECAbutton);
             this.Controls.Add(this.label31);
             this.Controls.Add(this.CurrentEcLabel);
             this.Controls.Add(this.label30);
@@ -824,7 +878,6 @@
             this.Controls.Add(this.ECALabel);
             this.Controls.Add(this.ECTempLabel);
             this.Controls.Add(this.label15);
-            this.Controls.Add(this.CalibrahumidityLabel);
             this.Controls.Add(this.CalibrasoiltempLabel);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.HumdataLabel);
@@ -864,8 +917,9 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.StempCalibra);
             this.Controls.Add(this.label1);
-            this.Name = "Form1";
-            this.Text = "Form1";
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Name = "NBI";
+            this.Text = "NBI";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -919,7 +973,6 @@
         private System.Windows.Forms.LinkLabel HumdataLabel;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.LinkLabel CalibrasoiltempLabel;
-        private System.Windows.Forms.LinkLabel CalibrahumidityLabel;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.LinkLabel ECTempLabel;
         private System.Windows.Forms.LinkLabel ECALabel;
@@ -947,6 +1000,10 @@
         private System.Windows.Forms.Label label30;
         private System.Windows.Forms.LinkLabel CurrentEcLabel;
         private System.Windows.Forms.Label label31;
+        private System.Windows.Forms.Button ECAbutton;
+        private System.Windows.Forms.Button ECBbutton;
+        private System.Windows.Forms.Button ECCbutton;
+        private System.Windows.Forms.LinkLabel CalibrahumidityLabel;
     }
 }
 

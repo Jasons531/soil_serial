@@ -12,6 +12,7 @@ namespace Soil_Serial
         }
         private Rs485 Rs485s = new Rs485();
         private SerialPort _SerialDevice;
+
         /// <summary>
         /// 温度
         /// </summary>
@@ -19,6 +20,12 @@ namespace Soil_Serial
         private TextBox _textECTemp;
         private Button _ECtempCalibra;
         private Button _ECTempClear;
+
+        /// <summary>
+        /// 显示当前电导率
+        /// </summary>
+        private LinkLabel _CurrentEcLabel;
+
         /// <summary>
         /// EC
         /// </summary>
@@ -38,11 +45,22 @@ namespace Soil_Serial
 
         private Button _ECCheck;
 
+        private LinkLabel _CalibraTempLabel;
+        private LinkLabel _CalibraECALabel;
+        private LinkLabel _CalibraECBLabel;
+        private LinkLabel _CalibraECCLabel;
+
+        private Button _ECAbutton;
+        private Button _ECBbutton;
+        private Button _ECCbutton;
+
         private RichTextBox _RichTextBox1;
 
-        public void InitWidget(SerialPort SerialDevice, LinkLabel ECTempLabel, TextBox textECTemp, Button ECtempCalibra, Button ECTempClear,
-                               LinkLabel ECALabel, TextBox textEC_A, LinkLabel ECBLabel, TextBox textEC_B, LinkLabel ECCLabel, TextBox textEC_C,
-                               Button ECCalibra, Button ECClear, Button ECCheck, RichTextBox RichTextBox1)
+        public void InitWidget(SerialPort SerialDevice, LinkLabel ECTempLabel, TextBox textECTemp, Button ECtempCalibra, Button ECTempClear, LinkLabel CurrentEcLabel,
+                               LinkLabel ECALabel, TextBox textEC_A, LinkLabel ECBLabel, TextBox textEC_B, LinkLabel ECCLabel, TextBox textEC_C, Button ECCalibra,
+                               Button ECClear, Button ECCheck, LinkLabel CalibraTempLabel, LinkLabel CalibraECALabel, LinkLabel CalibraECBLabel,
+                               LinkLabel CalibraECCLabel, Button ECAbutton, Button ECBbutton, Button ECCbutton,RichTextBox RichTextBox1)
+
         {
             _SerialDevice = SerialDevice;
             ///温度控件
@@ -50,6 +68,9 @@ namespace Soil_Serial
             _textECTemp = textECTemp;
             _ECtempCalibra = ECtempCalibra;
             _ECTempClear = ECTempClear;
+
+            ///电导率控件
+            _CurrentEcLabel = CurrentEcLabel;
 
             /// 0<EC<0.5控件
             _ECALabel = ECALabel;
@@ -69,7 +90,92 @@ namespace Soil_Serial
             ///标定查询
             _ECCheck = ECCheck;
 
+            _CalibraTempLabel = CalibraTempLabel;
+            _CalibraECALabel = CalibraECALabel;
+            _CalibraECBLabel = CalibraECBLabel;
+            _CalibraECCLabel = CalibraECCLabel;
+
+            _ECAbutton = ECAbutton;
+            _ECBbutton = ECBbutton;
+            _ECCbutton = ECCbutton;
+
             _RichTextBox1 = RichTextBox1;
+        }
+
+        public void EnableControlProper()
+        {
+            ///温度控件
+            _ECTempLabel.Enabled = true; 
+            _textECTemp.Enabled = true;
+            _ECtempCalibra.Enabled = true;
+            _ECTempClear.Enabled = true;
+
+            _CurrentEcLabel.Enabled = true;
+
+            /// 0<EC<0.5控件
+            _ECALabel.Enabled = true;
+            _textEC_A.Enabled = true;
+
+            ///1<EC<3控件
+            _ECBLabel.Enabled = true;
+            _textEC_B.Enabled = true;
+
+            ///9<EC<10控件
+            _ECCLabel.Enabled = true;
+            _textEC_C.Enabled = true;
+
+            _ECCalibra.Enabled = true;
+            _ECClear.Enabled = true;
+
+            ///标定查询
+            _ECCheck.Enabled = true;
+
+            _CalibraTempLabel.Enabled = true;
+            _CalibraECALabel.Enabled = true;
+            _CalibraECBLabel.Enabled = true;
+            _CalibraECCLabel.Enabled = true;
+
+            _ECAbutton.Enabled = true;
+            _ECBbutton.Enabled = true;
+            _ECCbutton.Enabled = true;
+        }
+
+        public void DisableControlProper()
+        {
+            ///温度控件
+            _ECTempLabel.Enabled = false;
+            _textECTemp.Enabled = false;
+            _ECtempCalibra.Enabled = false;
+            _ECTempClear.Enabled = false;
+
+            _CurrentEcLabel.Enabled = false;
+
+            /// 0<EC<0.5控件
+            _ECALabel.Enabled = false;
+            _textEC_A.Enabled = false;
+
+            ///1<EC<3控件
+            _ECBLabel.Enabled = false;
+            _textEC_B.Enabled = false;
+
+            ///9<EC<10控件
+            _ECCLabel.Enabled = false;
+            _textEC_C.Enabled = false;
+
+            _ECCalibra.Enabled = false;
+            _ECClear.Enabled = false;
+
+            ///标定查询
+            _ECCheck.Enabled = false;
+
+            _CalibraTempLabel.Enabled = false;
+            _CalibraECALabel.Enabled = false;
+            _CalibraECBLabel.Enabled = false;
+            _CalibraECCLabel.Enabled = false;
+
+            _ECAbutton.Enabled = false;
+            _ECBbutton.Enabled = false;
+            _ECCbutton.Enabled = false;
         }
 
         /// <summary>
@@ -132,9 +238,9 @@ namespace Soil_Serial
             int[] SensorData = new int[3];
             //int DataTemp = Convert.ToInt16(Convert.ToDouble(_ECTempLabel.Text) * 10);
 
-            _ECALabel.Text = "0.159";
-            _ECBLabel.Text = "0.857";
-            _ECCLabel.Text = "4.948";
+            //_ECALabel.Text = "0.159";
+            //_ECBLabel.Text = "0.857";
+            //_ECCLabel.Text = "4.948";
 
             if (_ECALabel.Text != "00.000" && _ECBLabel.Text != "00.000" && _ECCLabel.Text != "00.000")
             {
@@ -179,6 +285,9 @@ namespace Soil_Serial
             _SerialDevice.Write(SendCmds, 0, 8);
         }
 
+        /// <summary>
+        /// 查询土壤电导率标定
+        /// </summary>
         public void CheckSoilEC()
         {
             Byte[] SendCmds = new Byte[8] { 0xf8, 0x07, 0x03, 0x07, 0x00, 0x00, 0x00, 0x00 };

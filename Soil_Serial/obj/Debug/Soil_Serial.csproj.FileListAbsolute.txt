@@ -8,7 +8,6 @@ C:\Users\NBI\Desktop\土壤上位机\Soil_Serial\Soil_Serial\obj\Debug\Soil_Seri
 C:\Users\NBI\Desktop\土壤上位机\Soil_Serial\Soil_Serial\obj\Debug\Soil_Serial.csproj.CoreCompileInputs.cache
 C:\Users\NBI\Desktop\土壤上位机\Soil_Serial\Soil_Serial\obj\Debug\Soil_Serial.exe
 C:\Users\NBI\Desktop\土壤上位机\Soil_Serial\Soil_Serial\obj\Debug\Soil_Serial.pdb
-C:\Users\NBI\Desktop\土壤上位机\Soil_Serial\Soil_Serial\Soil_Serial\obj\Debug\Soil_Serial.Form1.resources
 C:\Users\NBI\Desktop\土壤上位机\Soil_Serial\Soil_Serial\Soil_Serial\obj\Debug\Soil_Serial.Properties.Resources.resources
 C:\Users\NBI\Desktop\土壤上位机\Soil_Serial\Soil_Serial\Soil_Serial\obj\Debug\Soil_Serial.csproj.GenerateResource.cache
 C:\Users\NBI\Desktop\土壤上位机\Soil_Serial\Soil_Serial\Soil_Serial\obj\Debug\Soil_Serial.csproj.CoreCompileInputs.cache
@@ -18,3 +17,4 @@ C:\Users\NBI\Desktop\土壤上位机\Soil_Serial\Soil_Serial\Soil_Serial\bin\Deb
 C:\Users\NBI\Desktop\土壤上位机\Soil_Serial\Soil_Serial\Soil_Serial\obj\Debug\Soil_Serial.exe
 C:\Users\NBI\Desktop\土壤上位机\Soil_Serial\Soil_Serial\Soil_Serial\obj\Debug\Soil_Serial.pdb
 C:\Users\NBI\Desktop\土壤上位机\Soil_Serial\Soil_Serial\Soil_Serial\obj\Debug\Soil_Serial.csprojAssemblyReference.cache
+C:\Users\NBI\Desktop\土壤上位机\Soil_Serial\Soil_Serial\Soil_Serial\obj\Debug\Soil_Serial.NBI.resources
