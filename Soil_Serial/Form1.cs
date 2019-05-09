@@ -367,7 +367,7 @@ namespace Soil_Serial
                                                 datatemp += 1;
                                                 CalibraECCLabel.Text = ((double)datatemp / -1000.0).ToString();
                                             }
-                                            buffer = "温度补偿：" + CalibraTempLabel.Text + "℃" + "  " + "EC_A：" + CalibraECALabel.Text
+                                            buffer = "查询温度补偿：" + CalibraTempLabel.Text + "℃" + "  " + "EC_A：" + CalibraECALabel.Text
                                                     + "  " + "EC_B：" + CalibraECBLabel.Text + "  " + "EC_C：" + CalibraECCLabel.Text;
 
                                             break;
@@ -437,7 +437,7 @@ namespace Soil_Serial
                                                 datatemp += 1;
                                                 CalibrahumidityLabel.Text = (datatemp * -1).ToString();
                                             }
-                                            buffer = "温度补偿：" + CalibrasoiltempLabel.Text + "℃" + "    " + "湿度补偿：" + CalibrahumidityLabel.Text;
+                                            buffer = "查询温度补偿：" + CalibrasoiltempLabel.Text + "℃" + "    " + "湿度补偿：" + CalibrahumidityLabel.Text;
                                             //richTextBox1.AppendText(Rs485s.ByteToString(ReceiveData));
                                             break;
                                         default:
@@ -579,6 +579,7 @@ namespace Soil_Serial
                         timer.Stop();
                         int data = Convert.ToInt16(Convert.ToDouble(textSoilTemp.Text) * 10);
                         TempHumiditys.SetSoilTemp(data);
+                        FileShare("土壤温湿度温度标定参数：" + textSoilTemp.Text);
                         Thread.Sleep(2000);
                         timer.Start();
                     }
@@ -701,6 +702,8 @@ namespace Soil_Serial
                         timer.Stop();
                         int data = Convert.ToInt16(Convert.ToDouble(textECTemp.Text) * 10);
                         SensorECs.SetSoilTemp(data);
+
+                        FileShare("土壤电导温度标定参数："+ textECTemp.Text);
                         Thread.Sleep(2000);
                         timer.Start();
                     }
@@ -784,7 +787,7 @@ namespace Soil_Serial
                         data[1] = Convert.ToDouble(textEC_B.Text);
                         data[2] = Convert.ToDouble(textEC_C.Text);
                         SensorData = SensorECs.SetSoilEC(data);
-                        FileShare("电导率标定参数：EC_A" + data[0] + "  " + "EC_B" + data[1] + "  " + "EC_C" + data[2]);
+                        FileShare("电导率标定参数：EC_A" + SensorData[0] + "  " + "EC_B" + SensorData[1] + "  " + "EC_C" + data[2]);
                         Thread.Sleep(2000);
                         timer.Start();
                     }

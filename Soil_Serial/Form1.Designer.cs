@@ -145,7 +145,7 @@
             this.textSoilHumid.Name = "textSoilHumid";
             this.textSoilHumid.Size = new System.Drawing.Size(100, 25);
             this.textSoilHumid.TabIndex = 6;
-            this.textSoilHumid.Text = "330";
+            this.textSoilHumid.Text = "320";
             // 
             // SHumidCalibra
             // 
